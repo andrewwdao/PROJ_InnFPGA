@@ -1,0 +1,16 @@
+#!/bin/bash
+#enable buildx environment for building the container of De10-nano application with Azure.
+# ref Step 2: https://www.intel.com/content/www/us/en/developer/articles/technical/reconfigure-an-fpga-from-the-cloud-with-containers.html
+
+set -eu -o pipefail #fail on error, debug all lines
+
+if [[ $# -eq 0 ]] ; then # if there is no input for the dtso name
+	echo "Please indicate the .dtso file name"
+	exit 1;
+fi
+
+dtc -W no-deprecated_plugin_syntax $1.dtso > $1.dtbo
+echo
+echo "Done!"
+echo "Remember to exit the embedded_command_shell by 'exit' command"
+echo

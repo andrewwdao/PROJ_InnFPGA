@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ 'root' != $( whoami ) ] ; then
+	echo "Please run as root! (sudo ${0})"
+		exit 1;
+		fi
+
+# root is super needed for the compilation to complete
+/home/andreww/intelFPGA_lite/21.1/nios2eds/nios2_command_shell.sh

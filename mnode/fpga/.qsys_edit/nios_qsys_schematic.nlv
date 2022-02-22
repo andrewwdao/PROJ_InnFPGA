@@ -1,0 +1,38 @@
+# # File gsaved with Nlview version 6.3.8  2013-12-19 bk=1.2992 VDI=34 GEI=35
+# 
+preplace inst nios_qsys.shared_memory -pg 1 -lvl 4 -y 30
+preplace inst nios_qsys.nios2_gen2.cpu -pg 1
+preplace inst nios_qsys.jtag_uart -pg 1 -lvl 4 -y 290
+preplace inst nios_qsys -pg 1 -lvl 1 -y 40 -regy -20
+preplace inst nios_qsys.sysid_qsys -pg 1 -lvl 4 -y 210
+preplace inst nios_qsys.rh_temp_drdy_n -pg 1 -lvl 4 -y 1090
+preplace inst nios_qsys.nios2_gen2.clock_bridge -pg 1
+preplace inst nios_qsys.light_i2c_opencores -pg 1 -lvl 4 -y 610
+preplace inst nios_qsys.timer -pg 1 -lvl 4 -y 390
+preplace inst nios_qsys.mpu_i2c_opencores -pg 1 -lvl 4 -y 730
+preplace inst nios_qsys.clk_50 -pg 1 -lvl 1 -y 890
+preplace inst nios_qsys.light_int -pg 1 -lvl 4 -y 490
+preplace inst nios_qsys.led_pio -pg 1 -lvl 4 -y 1190
+preplace inst nios_qsys.nios2_gen2.reset_bridge -pg 1
+preplace inst nios_qsys.nios2_gen2 -pg 1 -lvl 3 -y 820
+preplace inst nios_qsys.onchip_memory2 -pg 1 -lvl 4 -y 130
+preplace inst nios_qsys.mm_bridge_for_hps -pg 1 -lvl 2 -y 910
+preplace inst nios_qsys.rh_temp_i2c_opencores -pg 1 -lvl 4 -y 970
+preplace inst nios_qsys.mpu_int -pg 1 -lvl 4 -y 850
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)nios_qsys.clk,(SLAVE)clk_50.clk_in) 1 0 1 NJ
+preplace netloc FAN_OUT<net_container>nios_qsys</net_container>(SLAVE)light_i2c_opencores.interrupt_sender,(SLAVE)mpu_i2c_opencores.interrupt_sender,(SLAVE)jtag_uart.irq,(SLAVE)mpu_int.irq,(MASTER)nios2_gen2.irq,(SLAVE)rh_temp_i2c_opencores.interrupt_sender,(SLAVE)light_int.irq,(SLAVE)timer.irq) 1 3 1 1120
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)mm_bridge_for_hps.s0,(SLAVE)nios_qsys.mm_bridge_for_hps_s0) 1 0 2 NJ 880 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)nios_qsys.nios2_gen2_cpu_resetrequest_conduit,(SLAVE)nios2_gen2.cpu_resetrequest_conduit) 1 0 3 NJ 850 NJ 850 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)nios_qsys.light_int_external_connection,(SLAVE)light_int.external_connection) 1 0 4 NJ 520 NJ 520 NJ 520 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)light_i2c_opencores.export,(SLAVE)nios_qsys.light_i2c_opencores_export) 1 0 4 NJ 680 NJ 680 NJ 680 NJ
+preplace netloc FAN_OUT<net_container>nios_qsys</net_container>(SLAVE)sysid_qsys.clk,(SLAVE)led_pio.clk,(SLAVE)mm_bridge_for_hps.clk,(SLAVE)light_i2c_opencores.clock,(MASTER)clk_50.clk,(SLAVE)rh_temp_drdy_n.clk,(SLAVE)shared_memory.clk1,(SLAVE)timer.clk,(SLAVE)light_int.clk,(SLAVE)jtag_uart.clk,(SLAVE)onchip_memory2.clk1,(SLAVE)nios2_gen2.clk,(SLAVE)mpu_i2c_opencores.clock,(SLAVE)rh_temp_i2c_opencores.clock,(SLAVE)mpu_int.clk) 1 1 3 430 830 650 960 1160
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)nios_qsys.mpu_int_external_connection,(SLAVE)mpu_int.external_connection) 1 0 4 NJ 1020 NJ 1020 NJ 1020 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)led_pio.external_connection,(SLAVE)nios_qsys.led_pio) 1 0 4 NJ 1220 NJ 1220 NJ 1220 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)nios_qsys.rh_temp_i2c_opencores_export,(SLAVE)rh_temp_i2c_opencores.export) 1 0 4 NJ 1040 NJ 1040 NJ 1040 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)rh_temp_drdy_n.external_connection,(SLAVE)nios_qsys.rh_temp_drdy_n_external_connection) 1 0 4 NJ 1120 NJ 1120 NJ 1120 NJ
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)mpu_i2c_opencores.export,(SLAVE)nios_qsys.mpu_i2c_opencores_export) 1 0 4 NJ 780 NJ 780 NJ 780 NJ
+preplace netloc INTERCONNECT<net_container>nios_qsys</net_container>(SLAVE)light_int.s1,(SLAVE)led_pio.s1,(MASTER)nios2_gen2.instruction_master,(SLAVE)light_i2c_opencores.avalon_slave_0,(SLAVE)timer.s1,(SLAVE)mpu_int.s1,(SLAVE)rh_temp_drdy_n.s1,(SLAVE)jtag_uart.avalon_jtag_slave,(MASTER)mm_bridge_for_hps.m0,(MASTER)nios2_gen2.data_master,(SLAVE)rh_temp_i2c_opencores.avalon_slave_0,(SLAVE)shared_memory.s2,(SLAVE)nios2_gen2.debug_mem_slave,(SLAVE)mpu_i2c_opencores.avalon_slave_0,(SLAVE)sysid_qsys.control_slave,(SLAVE)onchip_memory2.s1,(SLAVE)shared_memory.s1) 1 2 2 630 1000 1080
+preplace netloc INTERCONNECT<net_container>nios_qsys</net_container>(SLAVE)mpu_i2c_opencores.clock_reset,(SLAVE)led_pio.reset,(SLAVE)timer.reset,(MASTER)clk_50.clk_reset,(SLAVE)rh_temp_drdy_n.reset,(SLAVE)rh_temp_i2c_opencores.clock_reset,(SLAVE)mm_bridge_for_hps.reset,(MASTER)nios2_gen2.debug_reset_request,(SLAVE)sysid_qsys.reset,(SLAVE)mpu_int.reset,(SLAVE)nios2_gen2.reset,(SLAVE)light_int.reset,(SLAVE)light_i2c_opencores.clock_reset,(SLAVE)jtag_uart.reset,(SLAVE)shared_memory.reset1,(SLAVE)onchip_memory2.reset1) 1 1 3 450 900 670 980 1140
+preplace netloc EXPORT<net_container>nios_qsys</net_container>(SLAVE)clk_50.clk_in_reset,(SLAVE)nios_qsys.reset) 1 0 1 NJ
+levelinfo -pg 1 0 200 1380
+levelinfo -hier nios_qsys 210 240 510 840 1220 1370

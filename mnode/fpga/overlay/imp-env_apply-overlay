@@ -1,0 +1,30 @@
+#!/bin/bash
+# apply new overlay with new fpga firmware
+# ref overlay.sh Step 6.2: https://www.intel.com/content/www/us/en/developer/articles/technical/reconfigure-an-fpga-from-the-cloud-with-containers.html
+
+set -eu -o pipefail #fail on error, debug all lines
+
+if [[ $# -eq 0 ]] ; then # if there is no input for the dtbo and rbf name
+	echo "Please indicate the .dtbo and .rbf file name, respectively"
+	exit 1;
+fi
+
+overlay_dir="/sys/kernel/config/device-tree/overlays/socfpga"
+overlay_dtbo=$1
+overlay_rbf=$2
+
+if [ -d $overlay_dir ];then
+  echo "Deleting $overlay_dir"
+  rmdir $overlay_dir
+fi
+echo "Copy DTBO and RBF"
+cp $overlay_dtbo /lib/firmware/
+cp $overlay_rbf /lib/firmware/
+
+echo "creating $overlay_dir"
+mkdir $overlay_dir
+
+echo "Doing Device Tree Overlay"
+echo $overlay_dtbo > $overlay_dir/path
+
+echo "Device Tree Overlay applied Successfully."

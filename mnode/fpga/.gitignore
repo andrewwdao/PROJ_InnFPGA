@@ -1,0 +1,153 @@
+# ----------------- Quartus - Questa -------------------
+
+
+# ref: https://github.com/kanto-player/kanto/blob/master/.gitignore
+# ref: https://github.com/thomasrussellmurphy/quartus-DE1_SOC-project/blob/master/.gitignore
+# A gitignore for Altera Quartus II that tries to ignore almost all of the
+# automatically Quartus-generated files. This primarily leaves the project,
+# settings, source, and constraint files to be added. The files ignored do not
+# include the bulk of the MegaFunction Wizard generated files which enables
+# a cloned repository to be used (usually) immediately without regenerating
+# Altera IP blocks.
+
+# ref: https://gist.github.com/nhasbun/71918796044b7ba89d6662133495f754
+# Working with Altera Quartus II (Q2) and do proper versioning is not that easy
+# but if you follow some rules it can be accomplished. :)
+# This file should be placed into the main directory where the .qpf file is
+# found. Generally Q2 throws all entities and so on in the main directory, but
+# you can place all stuff also in separate folders. This approach is followed
+# here. So when you create a new design create one or more folders where your
+# entities will be located and put a .gitignore in there that overrides the
+# ignores of this file, e.g. one single rule stating "!*" which allows now all
+# type of files. When you add a MegaFunction or another entity to your design,
+# simply add it to one of your private folders and Q2 will be happy and manage
+# everything quite good. When you want to do versioning of your generated
+# SOF/POF files, you can do this by redirecting the generated output to an own
+# folder. To do this go to:
+# "Assignments"
+# -> "Settings
+# -> "Compilation Process Settings"
+# -> "Save project output files in specified directory"
+# Now you can either place a .gitignore in the directory and allow the following
+# list of types:
+# !*.sof
+# !*.pof
+# or you create an own submodule in the folder to keep binary files out of your
+# design.
+
+# --- Must keep files
+# Need to keep all HDL files and timing constraint files
+!*.vhd
+!*.v
+!*.sdc
+# Setting of revision
+!*.qsf
+# Project file
+!*.qdf
+# Platform Designer files
+!*.qsys
+
+
+# --- ignore Quartus II generated folders
+*/db/
+/db
+db/
+db
+*/incremental_db/
+/incremental_db
+incremental_db/
+incremental_db
+# */simulation/
+# /simulation
+#simulation - because we save the simulation code in the simulation folder
+*/timing/
+timing
+*/testbench/
+testbench
+*/*_sim/
+
+_output_files/
+/output_files/
+/output_files
+output_files/
+output_files
+
+/greybox_tmp/
+/greybox_tmp
+greybox_tmp/
+greybox_tmp
+
+*_sim
+
+# ignore Quartus II generated files
+*_generation_script*
+*_inst.vhd
+*.a
+*.bak
+*.bsf
+*.cmp
+*.cdf
+*.chg
+*.done
+*.eqn
+*.elf
+*.hex
+*.html
+*.jdi
+*.jpg
+*.mif
+*.map
+/.metadata
+/nios_system_log.txt
+*.objdump
+obj
+*.pin
+*.pof
+*.ptf.*
+*.qar
+*.qarlog
+*.qws
+*.qdf
+*.rpt
+*.sof
+*.summary
+*.smsg
+*.swp
+*.sopc_builder
+/.sopc_builder
+/sopc_builder_log.txt
+*.tcl
+*.jdi
+*.log
+
+*~
+*example*
+*sopc_*
+PLLJ_PLLSPE_INFO.txt # The generated PLL specification file
+
+
+/c5_pin_model_dump.txt
+*.csv
+*.sopcinfo
+
+/hps_isw_handoff/
+/hps_isw_handoff
+hps_isw_handoff/
+hps_isw_handoff
+
+/nios_qsys/
+/nios_qsys
+nios_qsys/
+nios_qsys
+
+/soc_system/
+/soc_system
+soc_system/
+soc_system
+
+/top_qsys/
+/top_qsys
+top_qsys/
+top_qsys
+
+

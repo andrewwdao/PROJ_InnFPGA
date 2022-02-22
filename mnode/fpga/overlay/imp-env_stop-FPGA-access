@@ -1,0 +1,16 @@
+#!/bin/bash
+#enable buildx environment for building the container of De10-nano application with Azure.
+# ref Step 4.1: https://www.intel.com/content/www/us/en/developer/articles/technical/reconfigure-an-fpga-from-the-cloud-with-containers.html
+
+set -eu -o pipefail #fail on error, debug all lines
+
+if [ 'root' != $( whoami ) ] ; then
+	echo "Please run as root! (sudo ${0})"
+		exit 1;
+		fi
+
+
+systemctl stop lightdm
+echo 0 > /sys/class/graphics/fbcon/cursor_blink
+rmdir /sys/kernel/config/device-tree/overlays/socfpga
+
