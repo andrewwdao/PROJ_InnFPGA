@@ -12,22 +12,13 @@ fi
 # Licensed under the MIT license. See LICENSE file in the project root for
 # full license information
 
-# Summary of compile&build commands 
+echo
+echo "Remember to run Step 1 first (s1_build_qsys_nios)"
+echo "If return error, open Quartus and compile in the old fashion way"
+echo "Then open this file for the RBF file generation"
+echo
 
-# Generate Qsys RTL files and .sopcinfo file
-qsys-generate -syn top_qsys.qsys
-
-# Build NiosII software and mem_init hex file
-rm nios2/RFS_SENSOR_bsp/*.mk nios2/RFS_SENSOR_bsp/*.bsp
-cd nios2/RFS_SENSOR
-if [ -f Makefile ]; then
-  rm Makefile
-fi
-./create-this-app
-make mem_init_generate
-  
 # Compile FPGA design
-cd ../..
 quartus_sh --flow compile ap064
 
 

@@ -150,4 +150,13 @@ soc_system
 top_qsys/
 top_qsys
 
+/nios2/RFS_SENSOR/Makefile
+/nios2/RFS_SENSOR/mem_init/
+
+/nios2/RFS_SENSOR_bsp/
+/nios2/RFS_SENSOR_bsp
+nios2/RFS_SENSOR_bsp/
+/nios2/RFS_SENSOR_bsp/
+# exception
+!/nios2/RFS_SENSOR_bsp/create-this-bsp
 
