@@ -135,20 +135,25 @@ PLLJ_PLLSPE_INFO.txt # The generated PLL specification file
 hps_isw_handoff/
 hps_isw_handoff
 
-/nios_qsys/
-/nios_qsys
-nios_qsys/
-nios_qsys
+/qsys_nios_comm/
+/qsys_nios_comm
+qsys_nios_comm/
+qsys_nios_comm
 
-/soc_system/
-/soc_system
-soc_system/
-soc_system
+/qsys_nios_sensor/
+/qsys_nios_sensor
+qsys_nios_sensor/
+qsys_nios_sensor
 
-/top_qsys/
-/top_qsys
-top_qsys/
-top_qsys
+/qsys_hps_system/
+/qsys_hps_system
+qsys_hps_system/
+qsys_hps_system
+
+/qsys_top/
+/qsys_top
+qsys_top/
+qsys_top
 
 /nios2/RFS_SENSOR/Makefile
 /nios2/RFS_SENSOR/mem_init/
@@ -159,4 +164,9 @@ nios2/RFS_SENSOR_bsp/
 /nios2/RFS_SENSOR_bsp/
 # exception
 !/nios2/RFS_SENSOR_bsp/create-this-bsp
+
+/.qsys_edit/
+/.qsys_edit
+.qsys_edit/
+.qsys_edit
 

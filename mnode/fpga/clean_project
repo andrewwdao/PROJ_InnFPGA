@@ -1,0 +1,23 @@
+#!/bin/bash
+
+
+# if [ 'root' != $( whoami ) ] ; then
+# 	echo "Please run as root! (sudo ${0})"
+# 	exit 1;
+# fi
+
+cd ./nios2/RFS_SENSOR
+rm -r obj/ Makefile
+
+# /nios2
+cd ..
+cp ./RFS_SENSOR_bsp/create-this-bsp ./create-this-bsp
+rm -r ./RFS_SENSOR_bsp
+mkdir ./RFS_SENSOR_bsp
+mv ./create-this-bsp ./RFS_SENSOR_bsp/create-this-bsp
+
+# /
+cd ..
+rm *.sopcinfo
+rm -r *_qsys/
+

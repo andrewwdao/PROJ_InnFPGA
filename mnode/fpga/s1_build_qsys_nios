@@ -3,7 +3,8 @@
 set -eu -o pipefail # fail on error , debug all lines
 
 echo
-echo "Must evoke Nios2 shell before continue"
+echo "NOTE: Must evoke Nios2 shell before continue"
+echo "Executing..."
 echo
 
 if [ 'root' != $( whoami ) ] ; then

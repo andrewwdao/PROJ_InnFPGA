@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QUARTUS_VER = 21.1
+QUARTUS_VER=21.1
 NIOS_DIR=/home/$( ls /home/ | awk '{print $1}' )/intelFPGA_lite/$QUARTUS_VER/nios2eds/
 
 
