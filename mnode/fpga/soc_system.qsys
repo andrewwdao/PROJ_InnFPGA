@@ -231,7 +231,39 @@
          type = "boolean";
       }
    }
-   element nios2_resetreq_pio
+   element nios2_comm_resetreq_pio
+   {
+      datum _sortIndex
+      {
+         value = "15";
+         type = "int";
+      }
+   }
+   element nios2_comm_resetreq_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "197120";
+         type = "String";
+      }
+   }
+   element nios2_comm_resettaken_pio
+   {
+      datum _sortIndex
+      {
+         value = "16";
+         type = "int";
+      }
+   }
+   element nios2_comm_resettaken_pio.s1
+   {
+      datum baseAddress
+      {
+         value = "197376";
+         type = "String";
+      }
+   }
+   element nios2_sensor_resetreq_pio
    {
       datum _sortIndex
       {
@@ -239,7 +271,7 @@
          type = "int";
       }
    }
-   element nios2_resetreq_pio.s1
+   element nios2_sensor_resetreq_pio.s1
    {
       datum baseAddress
       {
@@ -247,7 +279,7 @@
          type = "String";
       }
    }
-   element nios2_resettaken_pio
+   element nios2_sensor_resettaken_pio
    {
       datum _sortIndex
       {
@@ -255,7 +287,7 @@
          type = "int";
       }
    }
-   element nios2_resettaken_pio.s1
+   element nios2_sensor_resettaken_pio.s1
    {
       datum baseAddress
       {
@@ -275,7 +307,7 @@
    {
       datum baseAddress
       {
-         value = "262144";
+         value = "524288";
          type = "String";
       }
    }
@@ -319,7 +351,7 @@
  <parameter name="hideFromIPCatalog" value="false" />
  <parameter name="lockedInterfaceDefinition" value="" />
  <parameter name="maxAdditionalLatency" value="1" />
- <parameter name="projectName">Module5_Sample_HW.qpf</parameter>
+ <parameter name="projectName" value="ap064.qpf" />
  <parameter name="sopcBorderPoints" value="false" />
  <parameter name="systemHash" value="0" />
  <parameter name="testBenchDutName" value="" />
@@ -371,13 +403,23 @@
    dir="end" />
  <interface name="memory" internal="hps_0.memory" type="conduit" dir="end" />
  <interface
-   name="nios2_resetreq_pio_external_connection"
-   internal="nios2_resetreq_pio.external_connection"
+   name="nios2_comm_resetreq_pio_external_connection"
+   internal="nios2_comm_resetreq_pio.external_connection"
    type="conduit"
    dir="end" />
  <interface
-   name="nios2_resettaken_pio_external_connection"
-   internal="nios2_resettaken_pio.external_connection"
+   name="nios2_comm_resettaken_pio_external_connection"
+   internal="nios2_comm_resettaken_pio.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="nios2_sensor_resetreq_pio_external_connection"
+   internal="nios2_sensor_resetreq_pio.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="nios2_sensor_resettaken_pio_external_connection"
+   internal="nios2_sensor_resettaken_pio.external_connection"
    type="conduit"
    dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
@@ -1048,12 +1090,12 @@
   <parameter name="PIPELINE_COMMAND" value="1" />
   <parameter name="PIPELINE_RESPONSE" value="1" />
   <parameter name="SYMBOL_WIDTH" value="8" />
-  <parameter name="SYSINFO_ADDR_WIDTH" value="19" />
+  <parameter name="SYSINFO_ADDR_WIDTH" value="20" />
   <parameter name="USE_AUTO_ADDRESS_WIDTH" value="1" />
   <parameter name="USE_RESPONSE" value="0" />
  </module>
  <module
-   name="nios2_resetreq_pio"
+   name="nios2_comm_resetreq_pio"
    kind="altera_avalon_pio"
    version="21.1"
    enabled="1">
@@ -1071,7 +1113,43 @@
   <parameter name="width" value="1" />
  </module>
  <module
-   name="nios2_resettaken_pio"
+   name="nios2_comm_resettaken_pio"
+   kind="altera_avalon_pio"
+   version="21.1"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="true" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="true" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
+ <module
+   name="nios2_sensor_resetreq_pio"
+   kind="altera_avalon_pio"
+   version="21.1"
+   enabled="1">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="1" />
+ </module>
+ <module
+   name="nios2_sensor_resettaken_pio"
    kind="altera_avalon_pio"
    version="21.1"
    enabled="1">
@@ -1094,7 +1172,7 @@
    version="21.1"
    enabled="1">
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
-  <parameter name="ADDRESS_WIDTH" value="18" />
+  <parameter name="ADDRESS_WIDTH" value="19" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="LINEWRAPBURSTS" value="0" />
   <parameter name="MAX_BURST_SIZE" value="1" />
@@ -1155,7 +1233,7 @@
    start="mm_bridge_0.m0"
    end="shared_mem_bridge.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00040000" />
+  <parameter name="baseAddress" value="0x00080000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="21.1" start="mm_bridge_0.m0" end="led_pio.s1">
@@ -1185,7 +1263,7 @@
    kind="avalon"
    version="21.1"
    start="mm_bridge_0.m0"
-   end="nios2_resetreq_pio.s1">
+   end="nios2_sensor_resetreq_pio.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00030000" />
   <parameter name="defaultConnection" value="false" />
@@ -1194,9 +1272,27 @@
    kind="avalon"
    version="21.1"
    start="mm_bridge_0.m0"
-   end="nios2_resettaken_pio.s1">
+   end="nios2_sensor_resettaken_pio.s1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00030100" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="21.1"
+   start="mm_bridge_0.m0"
+   end="nios2_comm_resetreq_pio.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00030200" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="21.1"
+   start="mm_bridge_0.m0"
+   end="nios2_comm_resettaken_pio.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00030300" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1275,12 +1371,22 @@
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="nios2_resetreq_pio.clk" />
+   end="nios2_sensor_resetreq_pio.clk" />
  <connection
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="nios2_resettaken_pio.clk" />
+   end="nios2_sensor_resettaken_pio.clk" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="nios2_comm_resetreq_pio.clk" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="nios2_comm_resettaken_pio.clk" />
  <connection
    kind="clock"
    version="21.1"
@@ -1385,12 +1491,22 @@
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="nios2_resetreq_pio.reset" />
+   end="nios2_sensor_resetreq_pio.reset" />
  <connection
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="nios2_resettaken_pio.reset" />
+   end="nios2_sensor_resettaken_pio.reset" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="nios2_comm_resettaken_pio.reset" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="nios2_comm_resetreq_pio.reset" />
  <connection kind="reset" version="21.1" start="clk_0.clk_reset" end="ILC.reset_n" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />

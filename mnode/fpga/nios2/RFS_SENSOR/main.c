@@ -67,37 +67,37 @@ void  set_thresh( void ){
 
   // Light threshold
   offst = LIGHT0_SENSOR_L_THRESH>>2;
-	for (int i=0; i<2 ; i++) { thresh.light[0][i] = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++); }
+	for (int i=0; i<2 ; i++) { thresh.light[0][i] = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++); }
   offst = LIGHT1_SENSOR_L_THRESH>>2;
-	for (int i=0; i<2 ; i++) { thresh.light[1][i] = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++); }
+	for (int i=0; i<2 ; i++) { thresh.light[1][i] = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++); }
 	offst = LUX_SENSOR_L_THRESH >>2;
-	for (int i=0; i<2 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.lux[i] = uf.f;  }
+	for (int i=0; i<2 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.lux[i] = uf.f;  }
 
   // Temp. HM. threshold
   offst = HUMIDI_SENSOR_L_THRESH>>2;
-	for (int i=0; i<2 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.fHumidity[i] = uf.f;  }
+	for (int i=0; i<2 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.fHumidity[i] = uf.f;  }
   offst = TEMPER_SENSOR_L_THRESH>>2;
-	for (int i=0; i<2 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.fTemperature[i] = uf.f;  }
+	for (int i=0; i<2 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   thresh.fTemperature[i] = uf.f;  }
 
   // 9-axis threshold
   offst = ACCEL_X_SENSOR_L_THRESH>>2;
   float *fp=&thresh.a[0][0];
-	for (int i=0; i<6 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
+	for (int i=0; i<6 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
 
   offst = GYROS_X_SENSOR_L_THRESH>>2;
   fp=&thresh.g[0][0];
-	for (int i=0; i<6 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
+	for (int i=0; i<6 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
 
   offst = MAGNE_X_SENSOR_L_THRESH>>2;
   fp=&thresh.m[0][0];
-	for (int i=0; i<6 ; i++) {  uf.u = IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
+	for (int i=0; i<6 ; i++) {  uf.u = IORD(SYSTEM_SHARED_MEMORY_BASE, offst++);   *fp++ = uf.f;  }
 
 }
 
 
 //#define is_OutOfRange(a,THptr) ( ((a) < (*(THptr))) || ((a)>(*((THptr)+1))) )
 #define is_OutOfRange(a,THptr) ( ((a) < ((THptr)[0])) || ((a)>(((THptr)[1]))) )
-#define SET_OUT_OF_RANGE_LED(v)  IOWR(NIOS_SYSTEM_LED_PIO_BASE, 0, (v) )
+#define SET_OUT_OF_RANGE_LED(v)  IOWR(NIOS_SENSOR_SYSTEM_LED_PIO_BASE, 0, (v) )
 
 bool check_light_threshold(int light0, int light1,float lux){
 	bool rv=false;
@@ -236,38 +236,38 @@ void Sensor_Report(bool print_flag){
 
   	// Light0,1
   	offst = LIGHT0_SENSOR_VALUE>>2;
-  	IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst, light0);
+  	IOWR(SYSTEM_SHARED_MEMORY_BASE, offst, light0);
   	offst = LIGHT1_SENSOR_VALUE>>2;
-  	IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst, light1);
+  	IOWR(SYSTEM_SHARED_MEMORY_BASE, offst, light1);
   	unsigned *p;
 		offst = LUX_SENSOR_VALUE>>2;
-  	p =(unsigned *)&lux;    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst, *p);
+  	p =(unsigned *)&lux;    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst, *p);
 
   	// Temp. and Humidity
   	offst = HUMIDI_SENSOR_VALUE>>2;
-  	p =(unsigned *)&fHumidity;    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst, *p);
+  	p =(unsigned *)&fHumidity;    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst, *p);
   	offst = TEMPER_SENSOR_VALUE>>2;
-  	p =(unsigned *)&fTemperature; IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst, *p);
+  	p =(unsigned *)&fTemperature; IOWR(SYSTEM_SHARED_MEMORY_BASE, offst, *p);
 
   	// 9-Axes
   	offst = ACCEL_X_SENSOR_VALUE>>2;
-  	p =(unsigned *)&a[0];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&a[1];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&a[2];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&a[0];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&a[1];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&a[2];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
   	offst = GYROS_X_SENSOR_VALUE>>2;
-  	p =(unsigned *)&g[0];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&g[1];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&g[2];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&g[0];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&g[1];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&g[2];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
   	offst = MAGNE_X_SENSOR_VALUE>>2;
-  	p =(unsigned *)&m[0];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&m[1];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
-  	p =(unsigned *)&m[2];    IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&m[0];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&m[1];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
+  	p =(unsigned *)&m[2];    IOWR(SYSTEM_SHARED_MEMORY_BASE, offst++, *p);
 
 }
 
-#define READ_COMMUNICATION_REGISTER IORD(NIOS_SYSTEM_SHARED_MEMORY_BASE, 1)
-#define SEND_ACK_COMMUNICATION_REGISTER IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, 1, 0)
-#define SEND_STATUS_REGISTER(x) IOWR(NIOS_SYSTEM_SHARED_MEMORY_BASE, 0, (x))
+#define READ_COMMUNICATION_REGISTER IORD(SYSTEM_SHARED_MEMORY_BASE, 1)
+#define SEND_ACK_COMMUNICATION_REGISTER IOWR(SYSTEM_SHARED_MEMORY_BASE, 1, 0)
+#define SEND_STATUS_REGISTER(x) IOWR(SYSTEM_SHARED_MEMORY_BASE, 0, (x))
 
 int main()
 {

@@ -18,7 +18,7 @@ SOPC_FILE=../../top_qsys.sopcinfo
 #NIOS2_BSP_ARGS=""
 NIOS2_BSP_ARGS="--set hal.make.bsp_cflags_defined_symbols -DALT_JTAG_UART_IGNORE_FIFO_FULL_ERROR"
 # NIOS2_BSP_ARGS="--set hal.enable_small_c_library true "
-CPU_NAME=
+CPU_NAME=nios_sensor_system_nios2_gen2 # replace by "?" and let the error happens to see the available names
 
 if [ -n "$CPU_NAME" ]; then
   NIOS2_BSP_ARGS="$NIOS2_BSP_ARGS --cpu-name $CPU_NAME"

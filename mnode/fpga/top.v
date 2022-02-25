@@ -20,19 +20,28 @@ module top(
     input               FPGA_CLK2_50,
     input               FPGA_CLK3_50,
 
+    //////////// KEY //////////
+    input    [ 1: 0]    KEY,
+
+    //////////// LED //////////
+    output   [ 7: 0]    LED,
+
+    //////////// SW //////////
+    input    [ 3: 0]    SW, 
+
     //////////// HDMI //////////
-    inout               HDMI_I2C_SCL,
-    inout               HDMI_I2C_SDA,
-    inout               HDMI_I2S,
-    inout               HDMI_LRCLK,
-    inout               HDMI_MCLK,
-    inout               HDMI_SCLK,
-    output              HDMI_TX_CLK,
-    output   [23: 0]    HDMI_TX_D,
-    output              HDMI_TX_DE,
-    output              HDMI_TX_HS,
-    input               HDMI_TX_INT,
-    output              HDMI_TX_VS,
+    // inout               HDMI_I2C_SCL,
+    // inout               HDMI_I2C_SDA,
+    // inout               HDMI_I2S,
+    // inout               HDMI_LRCLK,
+    // inout               HDMI_MCLK,
+    // inout               HDMI_SCLK,
+    // output              HDMI_TX_CLK,
+    // output   [23: 0]    HDMI_TX_D,
+    // output              HDMI_TX_DE,
+    // output              HDMI_TX_HS,
+    // input               HDMI_TX_INT,
+    // output              HDMI_TX_VS,
 
     //////////// HPS //////////
     inout               HPS_CONV_USB_N,
@@ -84,28 +93,29 @@ module top(
     input               HPS_USB_NXT,
     output              HPS_USB_STP,
 
-    //////////// KEY //////////
-    input    [ 1: 0]    KEY,
+    //////////// RS485 Nios no1 //////////
+    //directly using the TMP pins instead
+    // input 		          		NIOS_UART0_RXD,
+    // output		          		NIOS_UART0_TXD,
 
-    //////////// LED //////////
-    output   [ 7: 0]    LED,
-
-    //////////// SW //////////
-    input    [ 3: 0]    SW, 
-
+    // //////////// RS485 Nios no2 //////////
+    // input 		          		NIOS_UART1_RXD,
+    // output		          		NIOS_UART1_TXD,
+    
+    
     /////////// RFS card interface signals //////
-    input               LSENSOR_INT,
-    inout               LSENSOR_SCL,
-    inout               LSENSOR_SDA,
-    inout               MPU_AD0_SDO,
-    output              MPU_CS_n,
-    output              MPU_FSYNC,
-    input               MPU_INT,
-    inout               MPU_SCL_SCLK,
-    inout               MPU_SDA_SDI,
-    input               RH_TEMP_DRDY_n,
-    inout               RH_TEMP_I2C_SCL,
-    inout               RH_TEMP_I2C_SDA,
+    input                       LSENSOR_INT,
+    inout                       LSENSOR_SCL,
+    inout                       LSENSOR_SDA,
+    inout                       MPU_AD0_SDO,
+    output                      MPU_CS_n,
+    output                      MPU_FSYNC,
+    input                       MPU_INT,
+    inout                       MPU_SCL_SCLK,
+    inout                       MPU_SDA_SDI,
+    input                       RH_TEMP_DRDY_n,
+    inout                       RH_TEMP_I2C_SCL,
+    inout                       RH_TEMP_I2C_SDA,
     //// unused signals in this design ////
     inout 		          		BT_KEY,
     input 		          		BT_UART_RX,
@@ -142,7 +152,8 @@ wire                hps_debug_reset;
 wire     [27: 0]    stm_hw_events;
 wire                fpga_clk_50;
 
-wire      [7:0]     fpga_led_for_nios_internal;
+wire      [7:0]     fpga_led_for_nios_comm;
+wire      [7:0]     fpga_led_for_nios_sensor;
 
 
 // Wires for shared memory access beteen HPS sytem and NiosII system //
@@ -157,6 +168,8 @@ wire		shared_mem_bridge_read;
 wire	[3:0]	shared_mem_bridge_byteenable;
 wire		shared_mem_bridge_debugaccess;
 
+wire		nios2_comm_resetreq_pio_wire;
+wire		nios2_comm_resettaken_pio_wire;
 wire		nios2_resetreq_pio_wire;
 wire		nios2_resettaken_pio_wire;
 
@@ -168,115 +181,242 @@ assign stm_hw_events = {{15{1'b0}}, SW, fpga_led_for_hps_internal, fpga_debounce
 //=======================================================
 //  Structural coding
 //=======================================================
-top_qsys u0(
-               //Clock&Reset
-               .clk_clk(FPGA_CLK1_50),                                      //                            clk.clk
-               .reset_reset_n(hps_fpga_reset_n),                            //                          reset.reset_n
-               //HPS ddr3
-               .memory_mem_a(HPS_DDR3_ADDR),                                //                         memory.mem_a
-               .memory_mem_ba(HPS_DDR3_BA),                                 //                               .mem_ba
-               .memory_mem_ck(HPS_DDR3_CK_P),                               //                               .mem_ck
-               .memory_mem_ck_n(HPS_DDR3_CK_N),                             //                               .mem_ck_n
-               .memory_mem_cke(HPS_DDR3_CKE),                               //                               .mem_cke
-               .memory_mem_cs_n(HPS_DDR3_CS_N),                             //                               .mem_cs_n
-               .memory_mem_ras_n(HPS_DDR3_RAS_N),                           //                               .mem_ras_n
-               .memory_mem_cas_n(HPS_DDR3_CAS_N),                           //                               .mem_cas_n
-               .memory_mem_we_n(HPS_DDR3_WE_N),                             //                               .mem_we_n
-               .memory_mem_reset_n(HPS_DDR3_RESET_N),                       //                               .mem_reset_n
-               .memory_mem_dq(HPS_DDR3_DQ),                                 //                               .mem_dq
-               .memory_mem_dqs(HPS_DDR3_DQS_P),                             //                               .mem_dqs
-               .memory_mem_dqs_n(HPS_DDR3_DQS_N),                           //                               .mem_dqs_n
-               .memory_mem_odt(HPS_DDR3_ODT),                               //                               .mem_odt
-               .memory_mem_dm(HPS_DDR3_DM),                                 //                               .mem_dm
-               .memory_oct_rzqin(HPS_DDR3_RZQ),                             //                               .oct_rzqin
-               //HPS ethernet
-               .hps_io_hps_io_emac1_inst_TX_CLK(HPS_ENET_GTX_CLK),    //                   hps_io.hps_io_emac1_inst_TX_CLK
-               .hps_io_hps_io_emac1_inst_TXD0(HPS_ENET_TX_DATA[0]),   //                               .hps_io_emac1_inst_TXD0
-               .hps_io_hps_io_emac1_inst_TXD1(HPS_ENET_TX_DATA[1]),   //                               .hps_io_emac1_inst_TXD1
-               .hps_io_hps_io_emac1_inst_TXD2(HPS_ENET_TX_DATA[2]),   //                               .hps_io_emac1_inst_TXD2
-               .hps_io_hps_io_emac1_inst_TXD3(HPS_ENET_TX_DATA[3]),   //                               .hps_io_emac1_inst_TXD3
-               .hps_io_hps_io_emac1_inst_RXD0(HPS_ENET_RX_DATA[0]),   //                               .hps_io_emac1_inst_RXD0
-               .hps_io_hps_io_emac1_inst_MDIO(HPS_ENET_MDIO),         //                               .hps_io_emac1_inst_MDIO
-               .hps_io_hps_io_emac1_inst_MDC(HPS_ENET_MDC),           //                               .hps_io_emac1_inst_MDC
-               .hps_io_hps_io_emac1_inst_RX_CTL(HPS_ENET_RX_DV),      //                               .hps_io_emac1_inst_RX_CTL
-               .hps_io_hps_io_emac1_inst_TX_CTL(HPS_ENET_TX_EN),      //                               .hps_io_emac1_inst_TX_CTL
-               .hps_io_hps_io_emac1_inst_RX_CLK(HPS_ENET_RX_CLK),     //                               .hps_io_emac1_inst_RX_CLK
-               .hps_io_hps_io_emac1_inst_RXD1(HPS_ENET_RX_DATA[1]),   //                               .hps_io_emac1_inst_RXD1
-               .hps_io_hps_io_emac1_inst_RXD2(HPS_ENET_RX_DATA[2]),   //                               .hps_io_emac1_inst_RXD2
-               .hps_io_hps_io_emac1_inst_RXD3(HPS_ENET_RX_DATA[3]),   //                               .hps_io_emac1_inst_RXD3
-               //HPS SD card
-               .hps_io_hps_io_sdio_inst_CMD(HPS_SD_CMD),              //                               .hps_io_sdio_inst_CMD
-               .hps_io_hps_io_sdio_inst_D0(HPS_SD_DATA[0]),           //                               .hps_io_sdio_inst_D0
-               .hps_io_hps_io_sdio_inst_D1(HPS_SD_DATA[1]),           //                               .hps_io_sdio_inst_D1
-               .hps_io_hps_io_sdio_inst_CLK(HPS_SD_CLK),              //                               .hps_io_sdio_inst_CLK
-               .hps_io_hps_io_sdio_inst_D2(HPS_SD_DATA[2]),           //                               .hps_io_sdio_inst_D2
-               .hps_io_hps_io_sdio_inst_D3(HPS_SD_DATA[3]),           //                               .hps_io_sdio_inst_D3
-               //HPS USB
-               .hps_io_hps_io_usb1_inst_D0(HPS_USB_DATA[0]),          //                               .hps_io_usb1_inst_D0
-               .hps_io_hps_io_usb1_inst_D1(HPS_USB_DATA[1]),          //                               .hps_io_usb1_inst_D1
-               .hps_io_hps_io_usb1_inst_D2(HPS_USB_DATA[2]),          //                               .hps_io_usb1_inst_D2
-               .hps_io_hps_io_usb1_inst_D3(HPS_USB_DATA[3]),          //                               .hps_io_usb1_inst_D3
-               .hps_io_hps_io_usb1_inst_D4(HPS_USB_DATA[4]),          //                               .hps_io_usb1_inst_D4
-               .hps_io_hps_io_usb1_inst_D5(HPS_USB_DATA[5]),          //                               .hps_io_usb1_inst_D5
-               .hps_io_hps_io_usb1_inst_D6(HPS_USB_DATA[6]),          //                               .hps_io_usb1_inst_D6
-               .hps_io_hps_io_usb1_inst_D7(HPS_USB_DATA[7]),          //                               .hps_io_usb1_inst_D7
-               .hps_io_hps_io_usb1_inst_CLK(HPS_USB_CLKOUT),          //                               .hps_io_usb1_inst_CLK
-               .hps_io_hps_io_usb1_inst_STP(HPS_USB_STP),             //                               .hps_io_usb1_inst_STP
-               .hps_io_hps_io_usb1_inst_DIR(HPS_USB_DIR),             //                               .hps_io_usb1_inst_DIR
-               .hps_io_hps_io_usb1_inst_NXT(HPS_USB_NXT),             //                               .hps_io_usb1_inst_NXT
-               //HPS SPI
-               .hps_io_hps_io_spim1_inst_CLK(HPS_SPIM_CLK),           //                               .hps_io_spim1_inst_CLK
-               .hps_io_hps_io_spim1_inst_MOSI(HPS_SPIM_MOSI),         //                               .hps_io_spim1_inst_MOSI
-               .hps_io_hps_io_spim1_inst_MISO(HPS_SPIM_MISO),         //                               .hps_io_spim1_inst_MISO
-               .hps_io_hps_io_spim1_inst_SS0(HPS_SPIM_SS),            //                               .hps_io_spim1_inst_SS0
-               //HPS UART
-               .hps_io_hps_io_uart0_inst_RX(HPS_UART_RX),             //                               .hps_io_uart0_inst_RX
-               .hps_io_hps_io_uart0_inst_TX(HPS_UART_TX),             //                               .hps_io_uart0_inst_TX
-               //HPS I2C1
-               .hps_io_hps_io_i2c0_inst_SDA(HPS_I2C0_SDAT),           //                               .hps_io_i2c0_inst_SDA
-               .hps_io_hps_io_i2c0_inst_SCL(HPS_I2C0_SCLK),           //                               .hps_io_i2c0_inst_SCL
-               //HPS I2C2
-               .hps_io_hps_io_i2c1_inst_SDA(HPS_I2C1_SDAT),           //                               .hps_io_i2c1_inst_SDA
-               .hps_io_hps_io_i2c1_inst_SCL(HPS_I2C1_SCLK),           //                               .hps_io_i2c1_inst_SCL
-               //GPIO
-               .hps_io_hps_io_gpio_inst_GPIO09(HPS_CONV_USB_N),       //                               .hps_io_gpio_inst_GPIO09
-               .hps_io_hps_io_gpio_inst_GPIO35(HPS_ENET_INT_N),       //                               .hps_io_gpio_inst_GPIO35
-               .hps_io_hps_io_gpio_inst_GPIO40(HPS_LTC_GPIO),         //                               .hps_io_gpio_inst_GPIO40
-               .hps_io_hps_io_gpio_inst_GPIO53(HPS_LED),              //                               .hps_io_gpio_inst_GPIO53
-               .hps_io_hps_io_gpio_inst_GPIO54(HPS_KEY),              //                               .hps_io_gpio_inst_GPIO54
-               .hps_io_hps_io_gpio_inst_GPIO61(HPS_GSENSOR_INT),      //                               .hps_io_gpio_inst_GPIO61
-               //FPGA Partion
-               .hps_system_led_pio_external_connection_export(fpga_led_for_hps_internal),      //    led_pio_external_connection.export
-               .hps_system_dipsw_pio_external_connection_export(SW),                   //  dipsw_pio_external_connection.export
-               .hps_system_button_pio_external_connection_export(fpga_debounced_buttons),
-                                                                            // button_pio_external_connection.export
-               .hps_system_hps_0_h2f_reset_reset_n(hps_fpga_reset_n),                  //                hps_system_h2f_reset.reset_n
-               .hps_system_hps_0_f2h_cold_reset_req_reset_n(~hps_cold_reset),          //       hps_system_f2h_cold_reset_req.reset_n
-               .hps_system_hps_0_f2h_debug_reset_req_reset_n(~hps_debug_reset),        //      hps_system_f2h_debug_reset_req.reset_n
-               .hps_system_hps_0_f2h_stm_hw_events_stm_hwevents(stm_hw_events),        //        hps_system_f2h_stm_hw_events.stm_hwevents
-               .hps_system_hps_0_f2h_warm_reset_req_reset_n(~hps_warm_reset),          //       hps_system_f2h_warm_reset_req.reset_n
+top_qsys u0 (
+        //Clock&Reset
+        .clk_clk                                                                 (FPGA_CLK1_50),                                      //                            clk.clk
+        .reset_reset_n                                                           (hps_fpga_reset_n),                            //                          reset.reset_n
+        //HPS ethernet
+        .hps_io_hps_io_emac1_inst_TX_CLK                                         (HPS_ENET_GTX_CLK),    //                   hps_io.hps_io_emac1_inst_TX_CLK
+        .hps_io_hps_io_emac1_inst_TXD0                                           (HPS_ENET_TX_DATA[0]),   //                               .hps_io_emac1_inst_TXD0
+        .hps_io_hps_io_emac1_inst_TXD1                                           (HPS_ENET_TX_DATA[1]),   //                               .hps_io_emac1_inst_TXD1
+        .hps_io_hps_io_emac1_inst_TXD2                                           (HPS_ENET_TX_DATA[2]),   //                               .hps_io_emac1_inst_TXD2
+        .hps_io_hps_io_emac1_inst_TXD3                                           (HPS_ENET_TX_DATA[3]),   //                               .hps_io_emac1_inst_TXD3
+        .hps_io_hps_io_emac1_inst_RXD0                                           (HPS_ENET_RX_DATA[0]),   //                               .hps_io_emac1_inst_RXD0
+        .hps_io_hps_io_emac1_inst_MDIO                                           (HPS_ENET_MDIO),         //                               .hps_io_emac1_inst_MDIO
+        .hps_io_hps_io_emac1_inst_MDC                                            (HPS_ENET_MDC),           //                               .hps_io_emac1_inst_MDC
+        .hps_io_hps_io_emac1_inst_RX_CTL                                         (HPS_ENET_RX_DV),      //                               .hps_io_emac1_inst_RX_CTL
+        .hps_io_hps_io_emac1_inst_TX_CTL                                         (HPS_ENET_TX_EN),      //                               .hps_io_emac1_inst_TX_CTL
+        .hps_io_hps_io_emac1_inst_RX_CLK                                         (HPS_ENET_RX_CLK),     //                               .hps_io_emac1_inst_RX_CLK
+        .hps_io_hps_io_emac1_inst_RXD1                                           (HPS_ENET_RX_DATA[1]),   //                               .hps_io_emac1_inst_RXD1
+        .hps_io_hps_io_emac1_inst_RXD2                                           (HPS_ENET_RX_DATA[2]),   //                               .hps_io_emac1_inst_RXD2
+        .hps_io_hps_io_emac1_inst_RXD3                                           (HPS_ENET_RX_DATA[3]),   //                               .hps_io_emac1_inst_RXD3
+        //HPS SD card
+        .hps_io_hps_io_sdio_inst_CMD                                             (HPS_SD_CMD),              //                               .hps_io_sdio_inst_CMD
+        .hps_io_hps_io_sdio_inst_D0                                              (HPS_SD_DATA[0]),           //                               .hps_io_sdio_inst_D0
+        .hps_io_hps_io_sdio_inst_D1                                              (HPS_SD_DATA[1]),           //                               .hps_io_sdio_inst_D1
+        .hps_io_hps_io_sdio_inst_CLK                                             (HPS_SD_CLK),              //                               .hps_io_sdio_inst_CLK
+        .hps_io_hps_io_sdio_inst_D2                                              (HPS_SD_DATA[2]),           //                               .hps_io_sdio_inst_D2
+        .hps_io_hps_io_sdio_inst_D3                                              (HPS_SD_DATA[3]),           //                               .hps_io_sdio_inst_D3
+        //HPS USB
+        .hps_io_hps_io_usb1_inst_D0                                              (HPS_USB_DATA[0]),          //                               .hps_io_usb1_inst_D0
+        .hps_io_hps_io_usb1_inst_D1                                              (HPS_USB_DATA[1]),          //                               .hps_io_usb1_inst_D1
+        .hps_io_hps_io_usb1_inst_D2                                              (HPS_USB_DATA[2]),          //                               .hps_io_usb1_inst_D2
+        .hps_io_hps_io_usb1_inst_D3                                              (HPS_USB_DATA[3]),          //                               .hps_io_usb1_inst_D3
+        .hps_io_hps_io_usb1_inst_D4                                              (HPS_USB_DATA[4]),          //                               .hps_io_usb1_inst_D4
+        .hps_io_hps_io_usb1_inst_D5                                              (HPS_USB_DATA[5]),          //                               .hps_io_usb1_inst_D5
+        .hps_io_hps_io_usb1_inst_D6                                              (HPS_USB_DATA[6]),          //                               .hps_io_usb1_inst_D6
+        .hps_io_hps_io_usb1_inst_D7                                              (HPS_USB_DATA[7]),          //                               .hps_io_usb1_inst_D7
+        .hps_io_hps_io_usb1_inst_CLK                                             (HPS_USB_CLKOUT),          //                               .hps_io_usb1_inst_CLK
+        .hps_io_hps_io_usb1_inst_STP                                             (HPS_USB_STP),             //                               .hps_io_usb1_inst_STP
+        .hps_io_hps_io_usb1_inst_DIR                                             (HPS_USB_DIR),             //                               .hps_io_usb1_inst_DIR
+        .hps_io_hps_io_usb1_inst_NXT                                             (HPS_USB_NXT),             //                               .hps_io_usb1_inst_NXT
+        //HPS SPI
+        .hps_io_hps_io_spim1_inst_CLK                                            (HPS_SPIM_CLK),           //                               .hps_io_spim1_inst_CLK
+        .hps_io_hps_io_spim1_inst_MOSI                                           (HPS_SPIM_MOSI),         //                               .hps_io_spim1_inst_MOSI
+        .hps_io_hps_io_spim1_inst_MISO                                           (HPS_SPIM_MISO),         //                               .hps_io_spim1_inst_MISO
+        .hps_io_hps_io_spim1_inst_SS0                                            (HPS_SPIM_SS),            //                               .hps_io_spim1_inst_SS0
+        //HPS UART
+        .hps_io_hps_io_uart0_inst_RX                                             (HPS_UART_RX),             //                               .hps_io_uart0_inst_RX
+        .hps_io_hps_io_uart0_inst_TX                                             (HPS_UART_TX),             //                               .hps_io_uart0_inst_TX
+        //HPS I2C1
+        .hps_io_hps_io_i2c0_inst_SDA                                             (HPS_I2C0_SDAT),           //                               .hps_io_i2c0_inst_SDA
+        .hps_io_hps_io_i2c0_inst_SCL                                             (HPS_I2C0_SCLK),           //                               .hps_io_i2c0_inst_SCL
+        //HPS I2C2
+        .hps_io_hps_io_i2c1_inst_SDA                                             (HPS_I2C1_SDAT),           //                               .hps_io_i2c1_inst_SDA
+        .hps_io_hps_io_i2c1_inst_SCL                                             (HPS_I2C1_SCLK),           //                               .hps_io_i2c1_inst_SCL
+        //GPIO
+        .hps_io_hps_io_gpio_inst_GPIO09                                          (HPS_CONV_USB_N),       //                               .hps_io_gpio_inst_GPIO09
+        .hps_io_hps_io_gpio_inst_GPIO35                                          (HPS_ENET_INT_N),       //                               .hps_io_gpio_inst_GPIO35
+        .hps_io_hps_io_gpio_inst_GPIO40                                          (HPS_LTC_GPIO),         //                               .hps_io_gpio_inst_GPIO40
+        .hps_io_hps_io_gpio_inst_GPIO53                                          (HPS_LED),              //                               .hps_io_gpio_inst_GPIO53
+        .hps_io_hps_io_gpio_inst_GPIO54                                          (HPS_KEY),              //                               .hps_io_gpio_inst_GPIO54
+        .hps_io_hps_io_gpio_inst_GPIO61                                          (HPS_GSENSOR_INT),      //                               .hps_io_gpio_inst_GPIO61
+        //FPGA Partion
+        .hps_system_led_pio_external_connection_export                           (fpga_led_for_hps_internal),                           //                 hps_system_led_pio_external_connection.export
+        .hps_system_button_pio_external_connection_export                        (fpga_debounced_buttons),                        //              hps_system_button_pio_external_connection.export
+        .hps_system_dipsw_pio_external_connection_export                         (SW),                         //               hps_system_dipsw_pio_external_connection.export
+        
+        .hps_system_hps_0_f2h_warm_reset_req_reset_n                             (~hps_warm_reset),                             //                    hps_system_hps_0_f2h_warm_reset_req.reset_n
+        .hps_system_hps_0_f2h_cold_reset_req_reset_n                             (~hps_cold_reset),                             //                    hps_system_hps_0_f2h_cold_reset_req.reset_n
+        .hps_system_hps_0_f2h_debug_reset_req_reset_n                            (~hps_debug_reset),                            //                   hps_system_hps_0_f2h_debug_reset_req.reset_n
+        .hps_system_hps_0_f2h_stm_hw_events_stm_hwevents                         (stm_hw_events),                         //                     hps_system_hps_0_f2h_stm_hw_events.stm_hwevents
+        .hps_system_hps_0_h2f_reset_reset_n                                      (hps_fpga_reset_n),                                      //                             hps_system_hps_0_h2f_reset.reset_n
+        
+        .hps_system_nios2_comm_resetreq_pio_external_connection_export           (nios2_comm_resetreq_pio_wire),                //      hps_system_nios2_resetreq_pio_external_connection.export
+        .hps_system_nios2_comm_resettaken_pio_external_connection_export         (nios2_comm_resettaken_pio_wire),              //    hps_system_nios2_resettaken_pio_external_connection.export
+        .hps_system_nios2_sensor_resetreq_pio_external_connection_export         (nios2_resetreq_pio_wire),                //      hps_system_nios2_resetreq_pio_external_connection.export
+        .hps_system_nios2_sensor_resettaken_pio_external_connection_export       (nios2_resettaken_pio_wire),              //    hps_system_nios2_resettaken_pio_external_connection.export
+        //HPS ddr3
+        .memory_mem_a                                                            (HPS_DDR3_ADDR),                                //                         memory.mem_a
+        .memory_mem_ba                                                           (HPS_DDR3_BA),                                 //                               .mem_ba
+        .memory_mem_ck                                                           (HPS_DDR3_CK_P),                               //                               .mem_ck
+        .memory_mem_ck_n                                                         (HPS_DDR3_CK_N),                             //                               .mem_ck_n
+        .memory_mem_cke                                                          (HPS_DDR3_CKE),                               //                               .mem_cke
+        .memory_mem_cs_n                                                         (HPS_DDR3_CS_N),                             //                               .mem_cs_n
+        .memory_mem_ras_n                                                        (HPS_DDR3_RAS_N),                           //                               .mem_ras_n
+        .memory_mem_cas_n                                                        (HPS_DDR3_CAS_N),                           //                               .mem_cas_n
+        .memory_mem_we_n                                                         (HPS_DDR3_WE_N),                             //                               .mem_we_n
+        .memory_mem_reset_n                                                      (HPS_DDR3_RESET_N),                       //                               .mem_reset_n
+        .memory_mem_dq                                                           (HPS_DDR3_DQ),                                 //                               .mem_dq
+        .memory_mem_dqs                                                          (HPS_DDR3_DQS_P),                             //                               .mem_dqs
+        .memory_mem_dqs_n                                                        (HPS_DDR3_DQS_N),                           //                               .mem_dqs_n
+        .memory_mem_odt                                                          (HPS_DDR3_ODT),                               //                               .mem_odt
+        .memory_mem_dm                                                           (HPS_DDR3_DM),                                 //                               .mem_dm
+        .memory_oct_rzqin                                                        (HPS_DDR3_RZQ),                             //                               .oct_rzqin
+        // --- Communication Nios core
+        .nios_comm_system_led_pio_export                                         (fpga_led_for_nios_comm),                                         //                               nios_comm_system_led_pio.export
+        .nios_comm_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resetrequest   (nios2_comm_resetreq_pio_wire),   //   nios_comm_system_nios2_gen2_cpu_resetrequest_conduit.cpu_resetrequest
+        .nios_comm_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resettaken     (nios2_comm_resettaken_pio_wire),     //                                                       .cpu_resettaken
+        
+        // .nios_comm_system_rs485_uart_0_external_connection_rxd                   (NIOS_UART0_RXD),                 //    nios_comm_system_rs485_uart_0_external_connection_1.rxd
+        // .nios_comm_system_rs485_uart_0_external_connection_txd                   (NIOS_UART0_TXD),                 //                                                       .txd
+        
+        // .nios_comm_system_rs485_uart_1_external_connection_rxd                   (NIOS_UART1_RXD),                   //      nios_comm_system_rs485_uart_1_external_connection.rxd
+        // .nios_comm_system_rs485_uart_1_external_connection_txd                   (NIOS_UART1_TXD),                   //                                                       .txd
+        .nios_comm_system_rs485_uart_0_external_connection_rxd                   (TMD_D[3]),                 //    nios_comm_system_rs485_uart_0_external_connection_1.rxd
+        .nios_comm_system_rs485_uart_0_external_connection_txd                   (TMD_D[7]),                 //                                                       .txd
+        
+        .nios_comm_system_rs485_uart_1_external_connection_rxd                   (TMD_D[2]),                   //      nios_comm_system_rs485_uart_1_external_connection.rxd
+        .nios_comm_system_rs485_uart_1_external_connection_txd                   (TMD_D[1]),                   //                                                       .txd
+        
+        // --- Sensor Nios core
+        .nios_sensor_system_led_pio_export                                       (fpga_led_for_nios_sensor),                                       //                             nios_sensor_system_led_pio.export
+        .nios_sensor_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resetrequest (nios2_resetreq_pio_wire), // nios_sensor_system_nios2_gen2_cpu_resetrequest_conduit.cpu_resetrequest
+        .nios_sensor_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resettaken   (nios2_resettaken_pio_wire),   //                                                       .cpu_resettaken
+        .nios_sensor_system_light_i2c_opencores_export_scl_pad_io                (LSENSOR_SCL),                //          nios_sensor_system_light_i2c_opencores_export.scl_pad_io
+        
+        .nios_sensor_system_light_i2c_opencores_export_sda_pad_io                (LSENSOR_SDA),                //                                                       .sda_pad_io
+        .nios_sensor_system_light_int_external_connection_export                 (LSENSOR_INT),                 //       nios_sensor_system_light_int_external_connection.export
+        
+        .nios_sensor_system_mpu_i2c_opencores_export_scl_pad_io                  (MPU_SCL_SCLK),                  //            nios_sensor_system_mpu_i2c_opencores_export.scl_pad_io
+        .nios_sensor_system_mpu_i2c_opencores_export_sda_pad_io                  (MPU_SDA_SDI),                  //                                                       .sda_pad_io
+        .nios_sensor_system_mpu_int_external_connection_export                   (MPU_INT),                   //         nios_sensor_system_mpu_int_external_connection.export
+        
+        .nios_sensor_system_rh_temp_drdy_n_external_connection_export            (RH_TEMP_DRDY_n),            //  nios_sensor_system_rh_temp_drdy_n_external_connection.export
+        .nios_sensor_system_rh_temp_i2c_opencores_export_scl_pad_io              (RH_TEMP_I2C_SCL),              //        nios_sensor_system_rh_temp_i2c_opencores_export.scl_pad_io
+        .nios_sensor_system_rh_temp_i2c_opencores_export_sda_pad_io              (RH_TEMP_I2C_SDA),              //                                                       .sda_pad_io
 
-               .hps_system_nios2_resetreq_pio_external_connection_export   (nios2_resetreq_pio_wire),   
-               .hps_system_nios2_resettaken_pio_external_connection_export (nios2_resettaken_pio_wire),  
+    );
 
-               .nios_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resetrequest (nios2_resetreq_pio_wire), 
-               .nios_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resettaken   (nios2_resettaken_pio_wire),   
+// top_qsys u0(
+//                //Clock&Reset
+//                .clk_clk(FPGA_CLK1_50),                                      //                            clk.clk
+//                .reset_reset_n(hps_fpga_reset_n),                            //                          reset.reset_n
+//                //HPS ddr3
+//                .memory_mem_a(HPS_DDR3_ADDR),                                //                         memory.mem_a
+//                .memory_mem_ba(HPS_DDR3_BA),                                 //                               .mem_ba
+//                .memory_mem_ck(HPS_DDR3_CK_P),                               //                               .mem_ck
+//                .memory_mem_ck_n(HPS_DDR3_CK_N),                             //                               .mem_ck_n
+//                .memory_mem_cke(HPS_DDR3_CKE),                               //                               .mem_cke
+//                .memory_mem_cs_n(HPS_DDR3_CS_N),                             //                               .mem_cs_n
+//                .memory_mem_ras_n(HPS_DDR3_RAS_N),                           //                               .mem_ras_n
+//                .memory_mem_cas_n(HPS_DDR3_CAS_N),                           //                               .mem_cas_n
+//                .memory_mem_we_n(HPS_DDR3_WE_N),                             //                               .mem_we_n
+//                .memory_mem_reset_n(HPS_DDR3_RESET_N),                       //                               .mem_reset_n
+//                .memory_mem_dq(HPS_DDR3_DQ),                                 //                               .mem_dq
+//                .memory_mem_dqs(HPS_DDR3_DQS_P),                             //                               .mem_dqs
+//                .memory_mem_dqs_n(HPS_DDR3_DQS_N),                           //                               .mem_dqs_n
+//                .memory_mem_odt(HPS_DDR3_ODT),                               //                               .mem_odt
+//                .memory_mem_dm(HPS_DDR3_DM),                                 //                               .mem_dm
+//                .memory_oct_rzqin(HPS_DDR3_RZQ),                             //                               .oct_rzqin
+//                //HPS ethernet
+//                .hps_io_hps_io_emac1_inst_TX_CLK(HPS_ENET_GTX_CLK),    //                   hps_io.hps_io_emac1_inst_TX_CLK
+//                .hps_io_hps_io_emac1_inst_TXD0(HPS_ENET_TX_DATA[0]),   //                               .hps_io_emac1_inst_TXD0
+//                .hps_io_hps_io_emac1_inst_TXD1(HPS_ENET_TX_DATA[1]),   //                               .hps_io_emac1_inst_TXD1
+//                .hps_io_hps_io_emac1_inst_TXD2(HPS_ENET_TX_DATA[2]),   //                               .hps_io_emac1_inst_TXD2
+//                .hps_io_hps_io_emac1_inst_TXD3(HPS_ENET_TX_DATA[3]),   //                               .hps_io_emac1_inst_TXD3
+//                .hps_io_hps_io_emac1_inst_RXD0(HPS_ENET_RX_DATA[0]),   //                               .hps_io_emac1_inst_RXD0
+//                .hps_io_hps_io_emac1_inst_MDIO(HPS_ENET_MDIO),         //                               .hps_io_emac1_inst_MDIO
+//                .hps_io_hps_io_emac1_inst_MDC(HPS_ENET_MDC),           //                               .hps_io_emac1_inst_MDC
+//                .hps_io_hps_io_emac1_inst_RX_CTL(HPS_ENET_RX_DV),      //                               .hps_io_emac1_inst_RX_CTL
+//                .hps_io_hps_io_emac1_inst_TX_CTL(HPS_ENET_TX_EN),      //                               .hps_io_emac1_inst_TX_CTL
+//                .hps_io_hps_io_emac1_inst_RX_CLK(HPS_ENET_RX_CLK),     //                               .hps_io_emac1_inst_RX_CLK
+//                .hps_io_hps_io_emac1_inst_RXD1(HPS_ENET_RX_DATA[1]),   //                               .hps_io_emac1_inst_RXD1
+//                .hps_io_hps_io_emac1_inst_RXD2(HPS_ENET_RX_DATA[2]),   //                               .hps_io_emac1_inst_RXD2
+//                .hps_io_hps_io_emac1_inst_RXD3(HPS_ENET_RX_DATA[3]),   //                               .hps_io_emac1_inst_RXD3
+//                //HPS SD card
+//                .hps_io_hps_io_sdio_inst_CMD(HPS_SD_CMD),              //                               .hps_io_sdio_inst_CMD
+//                .hps_io_hps_io_sdio_inst_D0(HPS_SD_DATA[0]),           //                               .hps_io_sdio_inst_D0
+//                .hps_io_hps_io_sdio_inst_D1(HPS_SD_DATA[1]),           //                               .hps_io_sdio_inst_D1
+//                .hps_io_hps_io_sdio_inst_CLK(HPS_SD_CLK),              //                               .hps_io_sdio_inst_CLK
+//                .hps_io_hps_io_sdio_inst_D2(HPS_SD_DATA[2]),           //                               .hps_io_sdio_inst_D2
+//                .hps_io_hps_io_sdio_inst_D3(HPS_SD_DATA[3]),           //                               .hps_io_sdio_inst_D3
+//                //HPS USB
+//                .hps_io_hps_io_usb1_inst_D0(HPS_USB_DATA[0]),          //                               .hps_io_usb1_inst_D0
+//                .hps_io_hps_io_usb1_inst_D1(HPS_USB_DATA[1]),          //                               .hps_io_usb1_inst_D1
+//                .hps_io_hps_io_usb1_inst_D2(HPS_USB_DATA[2]),          //                               .hps_io_usb1_inst_D2
+//                .hps_io_hps_io_usb1_inst_D3(HPS_USB_DATA[3]),          //                               .hps_io_usb1_inst_D3
+//                .hps_io_hps_io_usb1_inst_D4(HPS_USB_DATA[4]),          //                               .hps_io_usb1_inst_D4
+//                .hps_io_hps_io_usb1_inst_D5(HPS_USB_DATA[5]),          //                               .hps_io_usb1_inst_D5
+//                .hps_io_hps_io_usb1_inst_D6(HPS_USB_DATA[6]),          //                               .hps_io_usb1_inst_D6
+//                .hps_io_hps_io_usb1_inst_D7(HPS_USB_DATA[7]),          //                               .hps_io_usb1_inst_D7
+//                .hps_io_hps_io_usb1_inst_CLK(HPS_USB_CLKOUT),          //                               .hps_io_usb1_inst_CLK
+//                .hps_io_hps_io_usb1_inst_STP(HPS_USB_STP),             //                               .hps_io_usb1_inst_STP
+//                .hps_io_hps_io_usb1_inst_DIR(HPS_USB_DIR),             //                               .hps_io_usb1_inst_DIR
+//                .hps_io_hps_io_usb1_inst_NXT(HPS_USB_NXT),             //                               .hps_io_usb1_inst_NXT
+//                //HPS SPI
+//                .hps_io_hps_io_spim1_inst_CLK(HPS_SPIM_CLK),           //                               .hps_io_spim1_inst_CLK
+//                .hps_io_hps_io_spim1_inst_MOSI(HPS_SPIM_MOSI),         //                               .hps_io_spim1_inst_MOSI
+//                .hps_io_hps_io_spim1_inst_MISO(HPS_SPIM_MISO),         //                               .hps_io_spim1_inst_MISO
+//                .hps_io_hps_io_spim1_inst_SS0(HPS_SPIM_SS),            //                               .hps_io_spim1_inst_SS0
+//                //HPS UART
+//                .hps_io_hps_io_uart0_inst_RX(HPS_UART_RX),             //                               .hps_io_uart0_inst_RX
+//                .hps_io_hps_io_uart0_inst_TX(HPS_UART_TX),             //                               .hps_io_uart0_inst_TX
+//                //HPS I2C1
+//                .hps_io_hps_io_i2c0_inst_SDA(HPS_I2C0_SDAT),           //                               .hps_io_i2c0_inst_SDA
+//                .hps_io_hps_io_i2c0_inst_SCL(HPS_I2C0_SCLK),           //                               .hps_io_i2c0_inst_SCL
+//                //HPS I2C2
+//                .hps_io_hps_io_i2c1_inst_SDA(HPS_I2C1_SDAT),           //                               .hps_io_i2c1_inst_SDA
+//                .hps_io_hps_io_i2c1_inst_SCL(HPS_I2C1_SCLK),           //                               .hps_io_i2c1_inst_SCL
+//                //GPIO
+//                .hps_io_hps_io_gpio_inst_GPIO09(HPS_CONV_USB_N),       //                               .hps_io_gpio_inst_GPIO09
+//                .hps_io_hps_io_gpio_inst_GPIO35(HPS_ENET_INT_N),       //                               .hps_io_gpio_inst_GPIO35
+//                .hps_io_hps_io_gpio_inst_GPIO40(HPS_LTC_GPIO),         //                               .hps_io_gpio_inst_GPIO40
+//                .hps_io_hps_io_gpio_inst_GPIO53(HPS_LED),              //                               .hps_io_gpio_inst_GPIO53
+//                .hps_io_hps_io_gpio_inst_GPIO54(HPS_KEY),              //                               .hps_io_gpio_inst_GPIO54
+//                .hps_io_hps_io_gpio_inst_GPIO61(HPS_GSENSOR_INT),      //                               .hps_io_gpio_inst_GPIO61
+//                //FPGA Partion
+//                .hps_system_led_pio_external_connection_export(fpga_led_for_hps_internal),      //    led_pio_external_connection.export
+//                .hps_system_dipsw_pio_external_connection_export(SW),                   //  dipsw_pio_external_connection.export
+//                .hps_system_button_pio_external_connection_export(fpga_debounced_buttons),
+//                                                                             // button_pio_external_connection.export
+//                .hps_system_hps_0_h2f_reset_reset_n(hps_fpga_reset_n),                  //                hps_system_h2f_reset.reset_n
+//                .hps_system_hps_0_f2h_cold_reset_req_reset_n(~hps_cold_reset),          //       hps_system_f2h_cold_reset_req.reset_n
+//                .hps_system_hps_0_f2h_debug_reset_req_reset_n(~hps_debug_reset),        //      hps_system_f2h_debug_reset_req.reset_n
+//                .hps_system_hps_0_f2h_stm_hw_events_stm_hwevents(stm_hw_events),        //        hps_system_f2h_stm_hw_events.stm_hwevents
+//                .hps_system_hps_0_f2h_warm_reset_req_reset_n(~hps_warm_reset),          //       hps_system_f2h_warm_reset_req.reset_n
+
+//                .hps_system_nios2_resetreq_pio_external_connection_export   (nios2_resetreq_pio_wire),   
+//                .hps_system_nios2_resettaken_pio_external_connection_export (nios2_resettaken_pio_wire),  
+
+//                .nios_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resetrequest (nios2_resetreq_pio_wire), 
+//                .nios_system_nios2_gen2_cpu_resetrequest_conduit_cpu_resettaken   (nios2_resettaken_pio_wire),   
 
 
-               .nios_system_mpu_i2c_opencores_export_scl_pad_io        (MPU_SCL_SCLK),                 //                     mpu_i2c_export.scl_pad_io
-               .nios_system_mpu_i2c_opencores_export_sda_pad_io        (MPU_SDA_SDI),                 //                                   .sda_pad_io
-               .nios_system_mpu_int_external_connection_export         (MPU_INT),         //         mpu_int_external_connection.export
+//                .nios_system_mpu_i2c_opencores_export_scl_pad_io        (MPU_SCL_SCLK),                 //                     mpu_i2c_export.scl_pad_io
+//                .nios_system_mpu_i2c_opencores_export_sda_pad_io        (MPU_SDA_SDI),                 //                                   .sda_pad_io
+//                .nios_system_mpu_int_external_connection_export         (MPU_INT),         //         mpu_int_external_connection.export
 
-               .nios_system_light_i2c_opencores_export_scl_pad_io      (LSENSOR_SCL),               //                   light_i2c_export.scl_pad_io
-               .nios_system_light_i2c_opencores_export_sda_pad_io      (LSENSOR_SDA),               //                                   .sda_pad_io
-               .nios_system_light_int_external_connection_export       (LSENSOR_INT),       //       light_int_external_connection.export
+//                .nios_system_light_i2c_opencores_export_scl_pad_io      (LSENSOR_SCL),               //                   light_i2c_export.scl_pad_io
+//                .nios_system_light_i2c_opencores_export_sda_pad_io      (LSENSOR_SDA),               //                                   .sda_pad_io
+//                .nios_system_light_int_external_connection_export       (LSENSOR_INT),       //       light_int_external_connection.export
 
-               .nios_system_rh_temp_i2c_opencores_export_scl_pad_io    (RH_TEMP_I2C_SCL),             //                 rh_temp_i2c_export.scl_pad_io
-               .nios_system_rh_temp_i2c_opencores_export_sda_pad_io    (RH_TEMP_I2C_SDA),              //                                   .sda_pad_io
-               .nios_system_rh_temp_drdy_n_external_connection_export  (RH_TEMP_DRDY_n),   //  rh_temp_drdy_n_external_connection.export
+//                .nios_system_rh_temp_i2c_opencores_export_scl_pad_io    (RH_TEMP_I2C_SCL),             //                 rh_temp_i2c_export.scl_pad_io
+//                .nios_system_rh_temp_i2c_opencores_export_sda_pad_io    (RH_TEMP_I2C_SDA),              //                                   .sda_pad_io
+//                .nios_system_rh_temp_drdy_n_external_connection_export  (RH_TEMP_DRDY_n),   //  rh_temp_drdy_n_external_connection.export
 
-               .nios_system_led_pio_export                            (fpga_led_for_nios_internal),
-           );
+//                .nios_system_led_pio_export                            (fpga_led_for_nios_internal),
+//            );
 
 
 // Debounce logic to clean out glitches within 1ms
@@ -327,6 +467,7 @@ defparam pulse_debug_reset.PULSE_EXT = 32;
 defparam pulse_debug_reset.EDGE_TYPE = 1;
 defparam pulse_debug_reset.IGNORE_RST_WHILE_BUSY = 1;
 
+// --- LED blinking
 reg [25: 0] counter;
 reg led_level;
 always @(posedge fpga_clk_50 or negedge hps_fpga_reset_n) begin
@@ -344,7 +485,9 @@ always @(posedge fpga_clk_50 or negedge hps_fpga_reset_n) begin
 end
 
 //assign LED[0] = led_level;
-assign LED[7: 0] = { fpga_led_for_nios_internal[2:0], fpga_led_for_hps_internal[3:0] , led_level};
+assign LED[7: 0] = { fpga_led_for_nios_comm[1:0], fpga_led_for_nios_comm[1:0], fpga_led_for_hps_internal[2:0] , led_level};
+
+// assign LED[7: 0] = { fpga_led_for_nios_internal[2:0], fpga_led_for_hps_internal[3:0] , led_level};
 
 
 endmodule
