@@ -18,6 +18,6 @@ mv ./create-this-bsp ./RFS_SENSOR_bsp/create-this-bsp
 
 # /
 cd ..
-rm *.sopcinfo
-rm -r *_qsys/
+rm *.sopcinfo *.csv c55_pin_model_dump.txt hps_sdram_p0_summary.csv
+rm -r *_qsys/ qsys_*/ db/ hps_isw_handoff/ incremental_db/ output_files/
 

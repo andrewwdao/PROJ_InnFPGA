@@ -181,7 +181,7 @@ assign stm_hw_events = {{15{1'b0}}, SW, fpga_led_for_hps_internal, fpga_debounce
 //=======================================================
 //  Structural coding
 //=======================================================
-top_qsys u0 (
+qsys_top u0 (
         //Clock&Reset
         .clk_clk                                                                 (FPGA_CLK1_50),                                      //                            clk.clk
         .reset_reset_n                                                           (hps_fpga_reset_n),                            //                          reset.reset_n

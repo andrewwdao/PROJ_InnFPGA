@@ -29,24 +29,24 @@
    {
       datum _sortIndex
       {
-         value = "3";
+         value = "2";
          type = "int";
-      }
-   }
-   element nios_comm_system.mm_bridge_for_hps_s0
-   {
-      datum baseAddress
-      {
-         value = "262144";
-         type = "String";
       }
    }
    element nios_sensor_system
    {
       datum _sortIndex
       {
-         value = "2";
+         value = "3";
          type = "int";
+      }
+   }
+   element nios_sensor_system.mm_bridge_for_hps_s0
+   {
+      datum baseAddress
+      {
+         value = "262144";
+         type = "String";
       }
    }
 }
@@ -127,12 +127,6 @@
    type="conduit"
    dir="end" />
  <interface
-   name="hps_system_nios2_resetreq_pio_external_connection"
-   internal="hps_system.nios2_resetreq_pio_external_connection" />
- <interface
-   name="hps_system_nios2_resettaken_pio_external_connection"
-   internal="hps_system.nios2_resettaken_pio_external_connection" />
- <interface
    name="hps_system_nios2_sensor_resetreq_pio_external_connection"
    internal="hps_system.nios2_sensor_resetreq_pio_external_connection"
    type="conduit"
@@ -158,9 +152,6 @@
    internal="nios_comm_system.rs485_uart_0_external_connection"
    type="conduit"
    dir="end" />
- <interface
-   name="nios_comm_system_rs485_uart_0_external_connection_1"
-   internal="nios_comm_system.rs485_uart_0_external_connection_1" />
  <interface
    name="nios_comm_system_rs485_uart_1_external_connection"
    internal="nios_comm_system.rs485_uart_1_external_connection"
@@ -213,7 +204,7 @@
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
- <module name="hps_system" kind="soc_system" version="1.0" enabled="1">
+ <module name="hps_system" kind="qsys_hps_system" version="1.0" enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
   <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="1" />
@@ -221,7 +212,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_MAP"><![CDATA[<address-map><slave name='nios_sensor_system_shared_memory.s2' start='0x0' end='0x1000' /><slave name='nios_sensor_system_onchip_memory2.s1' start='0x20000' end='0x40000' /><slave name='nios_comm_system_shared_memory.s2' start='0x40000' end='0x41000' /><slave name='nios_comm_system_onchip_memory2.s1' start='0x60000' end='0x80000' /></address-map>]]></parameter>
+  <parameter name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_MAP"><![CDATA[<address-map><slave name='nios_comm_system_shared_memory.s2' start='0x0' end='0x1000' /><slave name='nios_comm_system_onchip_memory2.s1' start='0x20000' end='0x40000' /><slave name='nios_sensor_system_shared_memory.s2' start='0x40000' end='0x41000' /><slave name='nios_sensor_system_onchip_memory2.s1' start='0x60000' end='0x80000' /></address-map>]]></parameter>
   <parameter
      name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_WIDTH"
      value="AddressWidth = 19" />
@@ -229,7 +220,7 @@
  </module>
  <module
    name="nios_comm_system"
-   kind="nios_comm_qsys"
+   kind="qsys_nios_comm"
    version="1.0"
    enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
@@ -243,7 +234,7 @@
  </module>
  <module
    name="nios_sensor_system"
-   kind="nios_sensor_qsys"
+   kind="qsys_nios_sensor"
    version="1.0"
    enabled="1">
   <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
@@ -259,7 +250,7 @@
    kind="avalon"
    version="21.1"
    start="hps_system.shared_mem_bridge_m0"
-   end="nios_sensor_system.mm_bridge_for_hps_s0">
+   end="nios_comm_system.mm_bridge_for_hps_s0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
@@ -268,7 +259,7 @@
    kind="avalon"
    version="21.1"
    start="hps_system.shared_mem_bridge_m0"
-   end="nios_comm_system.mm_bridge_for_hps_s0">
+   end="nios_sensor_system.mm_bridge_for_hps_s0">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00040000" />
   <parameter name="defaultConnection" value="false" />
@@ -278,12 +269,12 @@
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="nios_sensor_system.clk" />
+   end="nios_comm_system.clk" />
  <connection
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="nios_comm_system.clk" />
+   end="nios_sensor_system.clk" />
  <connection
    kind="reset"
    version="21.1"
@@ -293,12 +284,12 @@
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="nios_sensor_system.reset" />
+   end="nios_comm_system.reset" />
  <connection
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="nios_comm_system.reset" />
+   end="nios_sensor_system.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

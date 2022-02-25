@@ -20,7 +20,7 @@ fi
 # Summary of compile&build commands 
 
 # Generate Qsys RTL files and .sopcinfo file
-qsys-generate -syn top_qsys.qsys
+qsys-generate -syn qsys_top.qsys
 
 # Build NiosII software and mem_init hex file
 if [ -f "./nios2/RFS_SENSOR_bsp/*.mk" ] ; then

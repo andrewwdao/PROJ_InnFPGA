@@ -81,14 +81,6 @@
          type = "int";
       }
    }
-   element onchip_memory2.s1
-   {
-      datum baseAddress
-      {
-         value = "131072";
-         type = "String";
-      }
-   }
    element rs485_uart_0
    {
       datum _sortIndex
