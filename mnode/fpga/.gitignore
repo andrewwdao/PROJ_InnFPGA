@@ -116,7 +116,7 @@ obj
 *.sopc_builder
 /.sopc_builder
 /sopc_builder_log.txt
-*.tcl
+# *.tcl - tcl files are needed for ip cores
 *.jdi
 *.log
 

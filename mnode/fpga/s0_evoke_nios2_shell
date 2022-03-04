@@ -7,14 +7,14 @@ NIOS_DIR=/home/$( ls /home/ | awk '{print $1}' )/intelFPGA_lite/$QUARTUS_VER/nio
 echo
 echo "NOTE: only works with:"
 echo " - Quartus Lite version $QUARTUS_VER"
-echo " - Quartus install in /home/<user>/"
+echo " - Nios install in $NIOS_DIR"
 echo "If you install in another location or use another version, open this file and edit to the correct info "
 echo
 
 if [ 'root' != $( whoami ) ] ; then
 	echo "Please run as root! (sudo ${0})"
-		exit 1;
-		fi
+	exit 1;
+fi
 
 # root is super needed for the compilation to complete
 $NIOS_DIR/nios2_command_shell.sh
