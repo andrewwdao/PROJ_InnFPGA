@@ -307,7 +307,7 @@
    {
       datum baseAddress
       {
-         value = "524288";
+         value = "1048576";
          type = "String";
       }
    }
@@ -1090,7 +1090,7 @@
   <parameter name="PIPELINE_COMMAND" value="1" />
   <parameter name="PIPELINE_RESPONSE" value="1" />
   <parameter name="SYMBOL_WIDTH" value="8" />
-  <parameter name="SYSINFO_ADDR_WIDTH" value="20" />
+  <parameter name="SYSINFO_ADDR_WIDTH" value="21" />
   <parameter name="USE_AUTO_ADDRESS_WIDTH" value="1" />
   <parameter name="USE_RESPONSE" value="0" />
  </module>
@@ -1172,7 +1172,7 @@
    version="21.1"
    enabled="1">
   <parameter name="ADDRESS_UNITS" value="SYMBOLS" />
-  <parameter name="ADDRESS_WIDTH" value="19" />
+  <parameter name="ADDRESS_WIDTH" value="20" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="LINEWRAPBURSTS" value="0" />
   <parameter name="MAX_BURST_SIZE" value="1" />
@@ -1233,7 +1233,7 @@
    start="mm_bridge_0.m0"
    end="shared_mem_bridge.s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00080000" />
+  <parameter name="baseAddress" value="0x00100000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="21.1" start="mm_bridge_0.m0" end="led_pio.s1">

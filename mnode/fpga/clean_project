@@ -6,18 +6,34 @@
 # 	exit 1;
 # fi
 
-cd ./nios2/RFS_SENSOR
-rm -r obj/ Makefile
+# cleaning on sensor_unit
+cd ./nios2/sensor_unit
+rm -r obj/ Makefile *.elf *.map *.objdump
+cd ../../
+# cleaning on comm_unit
+cd ./nios2/comm_unit
+rm -r obj/ Makefile *.elf *.map *.objdump
 
 # /nios2
 cd ..
-cp ./RFS_SENSOR_bsp/create-this-bsp ./create-this-bsp
-rm -r ./RFS_SENSOR_bsp
-mkdir ./RFS_SENSOR_bsp
-mv ./create-this-bsp ./RFS_SENSOR_bsp/create-this-bsp
+# cleaning on sensor_unit
+cp ./sensor_unit_bsp/create-this-bsp ./create-this-bsp
+rm -r ./sensor_unit_bsp
+mkdir ./sensor_unit_bsp
+mv ./create-this-bsp ./sensor_unit_bsp/create-this-bsp
+chown $( ls /home/ | awk '{print $1}' ): ./sensor_unit_bsp/*
+chmod u+w ./sensor_unit_bsp/* #/give permission
+
+# cleaning on comm_unit
+cp ./comm_unit_bsp/create-this-bsp ./create-this-bsp
+rm -r ./comm_unit_bsp
+mkdir ./comm_unit_bsp
+mv ./create-this-bsp ./comm_unit_bsp/create-this-bsp
+chown $( ls /home/ | awk '{print $1}' ): ./comm_unit_bsp/*
+chmod u+w ./comm_unit_bsp/* #/give permission
 
 # /
 cd ..
-rm *.sopcinfo *.csv c55_pin_model_dump.txt hps_sdram_p0_summary.csv
+rm *.sopcinfo *.csv c5_pin_model_dump.txt hps_sdram_p0_summary.csv
 rm -r *_qsys/ qsys_*/ db/ hps_isw_handoff/ incremental_db/ output_files/
 

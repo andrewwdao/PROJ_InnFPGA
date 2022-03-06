@@ -13,47 +13,41 @@
    {
       datum _sortIndex
       {
-         value = "0";
+         value = "1";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element jtag_uart
    {
       datum _sortIndex
       {
-         value = "3";
+         value = "6";
          type = "int";
       }
-   }
-   element jtag_uart.avalon_jtag_slave
-   {
-      datum baseAddress
+      datum sopceditor_expanded
       {
-         value = "266424";
-         type = "String";
+         value = "0";
+         type = "boolean";
       }
    }
    element led_pio
    {
       datum _sortIndex
       {
-         value = "12";
+         value = "14";
          type = "int";
-      }
-   }
-   element led_pio.s1
-   {
-      datum baseAddress
-      {
-         value = "4096";
-         type = "String";
       }
    }
    element light_i2c_opencores
    {
       datum _sortIndex
       {
-         value = "10";
+         value = "12";
          type = "int";
       }
    }
@@ -69,7 +63,7 @@
    {
       datum _sortIndex
       {
-         value = "7";
+         value = "9";
          type = "int";
       }
    }
@@ -85,15 +79,20 @@
    {
       datum _sortIndex
       {
-         value = "14";
+         value = "3";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element mpu_i2c_opencores
    {
       datum _sortIndex
       {
-         value = "9";
+         value = "11";
          type = "int";
       }
    }
@@ -109,7 +108,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "8";
          type = "int";
       }
    }
@@ -125,8 +124,13 @@
    {
       datum _sortIndex
       {
-         value = "1";
+         value = "2";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element nios2_gen2.debug_mem_slave
@@ -141,15 +145,20 @@
    {
       datum _sortIndex
       {
-         value = "2";
+         value = "4";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element rh_temp_drdy_n
    {
       datum _sortIndex
       {
-         value = "8";
+         value = "10";
          type = "int";
       }
    }
@@ -165,7 +174,7 @@
    {
       datum _sortIndex
       {
-         value = "11";
+         value = "13";
          type = "int";
       }
    }
@@ -181,16 +190,26 @@
    {
       datum _sortIndex
       {
-         value = "13";
+         value = "5";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element sysid_qsys
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "0";
          type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
       }
    }
    element sysid_qsys.control_slave
@@ -205,16 +224,13 @@
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "7";
          type = "int";
       }
-   }
-   element timer.s1
-   {
-      datum baseAddress
+      datum sopceditor_expanded
       {
-         value = "266336";
-         type = "String";
+         value = "0";
+         type = "boolean";
       }
    }
 }

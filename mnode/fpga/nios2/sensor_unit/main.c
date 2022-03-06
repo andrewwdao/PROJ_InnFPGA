@@ -273,7 +273,7 @@ int main()
 {
 //	fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 
-	printf("Welcome to DE10_NANO RFS_SENSOR DEMO!\r\n");
+	printf("Welcome to DE10-Nano Sensor Unit!\r\n");
 
   	bool bPass = FALSE;
 

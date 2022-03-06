@@ -23,23 +23,46 @@ fi
 qsys-generate -syn qsys_top.qsys
 
 # Build NiosII software and mem_init hex file
-if [ -f "./nios2/RFS_SENSOR_bsp/*.mk" ] ; then
-	rm -rf ./nios2/RFS_SENSOR_bsp/*.mk
+# --- Sensor Unit
+echo
+echo "Configuring Sensor Unit..."
+echo
+if [ -f "./nios2/sensor_unit_bsp/*.mk" ] ; then
+	rm -rf ./nios2/sensor_unit_bsp/*.mk
 fi
 
-if [ -f "./nios2/RFS_SENSOR_bsp/*.bsp" ] ; then
-	rm -rf ./nios2/RFS_SENSOR_bsp/*.bsp
+if [ -f "./nios2/sensor_unit_bsp/*.bsp" ] ; then
+	rm -rf ./nios2/sensor_unit_bsp/*.bsp
 fi
-# rm nios2/RFS_SENSOR_bsp/*.mk nios2/RFS_SENSOR_bsp/*.bsp
 
-cd nios2/RFS_SENSOR
+cd nios2/sensor_unit
 if [ -f Makefile ]; then
   rm Makefile
 fi
 ./create-this-app
 make mem_init_generate
-  
 cd ../..
+
+# --- Comm Unit
+echo
+echo "Configuring Communication Unit..."
+echo
+if [ -f "./nios2/comm_unit_bsp/*.mk" ] ; then
+	rm -rf ./nios2/comm_unit_bsp/*.mk
+fi
+
+if [ -f "./nios2/comm_unit_bsp/*.bsp" ] ; then
+	rm -rf ./nios2/comm_unit_bsp/*.bsp
+fi
+
+cd nios2/comm_unit
+if [ -f Makefile ]; then
+  rm Makefile
+fi
+./create-this-app
+make mem_init_generate
+cd ../..
+
 
 echo
 echo "Remember to exit nios shell before execute Step 2 - compile the FPGA design"

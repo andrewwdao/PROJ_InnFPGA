@@ -50,13 +50,8 @@
 
 # --- ignore Quartus II generated folders
 */db/
-/db
 db/
-db
-*/incremental_db/
-/incremental_db
 incremental_db/
-incremental_db
 # */simulation/
 # /simulation
 #simulation - because we save the simulation code in the simulation folder
@@ -66,16 +61,9 @@ timing
 testbench
 */*_sim/
 
-_output_files/
-/output_files/
-/output_files
 output_files/
-output_files
 
-/greybox_tmp/
-/greybox_tmp
 greybox_tmp/
-greybox_tmp
 
 *_sim
 
@@ -130,43 +118,28 @@ PLLJ_PLLSPE_INFO.txt # The generated PLL specification file
 *.csv
 *.sopcinfo
 
-/hps_isw_handoff/
-/hps_isw_handoff
 hps_isw_handoff/
-hps_isw_handoff
 
-/qsys_nios_comm/
-/qsys_nios_comm
+# --------------- Platform Designer compiled folders
 qsys_nios_comm/
-qsys_nios_comm
-
-/qsys_nios_sensor/
-/qsys_nios_sensor
 qsys_nios_sensor/
-qsys_nios_sensor
-
-/qsys_hps_system/
-/qsys_hps_system
 qsys_hps_system/
-qsys_hps_system
-
-/qsys_top/
-/qsys_top
 qsys_top/
-qsys_top
-
-/nios2/RFS_SENSOR/Makefile
-/nios2/RFS_SENSOR/mem_init/
-
-/nios2/RFS_SENSOR_bsp/
-/nios2/RFS_SENSOR_bsp
-nios2/RFS_SENSOR_bsp/
-/nios2/RFS_SENSOR_bsp/
-# exception
-!/nios2/RFS_SENSOR_bsp/create-this-bsp
-
-/.qsys_edit/
-/.qsys_edit
 .qsys_edit/
-.qsys_edit
 
+
+
+# --------------- Sensor Unit
+nios2/sensor_unit/Makefile
+nios2/sensor_unit/mem_init/
+nios2/sensor_unit_bsp/*
+# exception for the creation shell script
+!nios2/sensor_unit_bsp/create-this-bsp
+
+
+# --------------- Communication Unit
+nios2/comm_unit/Makefile
+nios2/comm_unit/mem_init/
+nios2/comm_unit_bsp/*
+# exception for the creation shell script
+!nios2/comm_unit_bsp/create-this-bsp

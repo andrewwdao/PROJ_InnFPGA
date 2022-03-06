@@ -578,7 +578,8 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to NIOS_UART1_TXD
 set_global_assignment -name VERILOG_FILE top.v
 set_global_assignment -name SDC_FILE top.sdc
 set_global_assignment -name QIP_FILE qsys_top/synthesis/qsys_top.qip
-set_global_assignment -name QIP_FILE nios2/RFS_SENSOR/mem_init/meminit.qip
+set_global_assignment -name QIP_FILE nios2/sensor_unit/mem_init/meminit.qip
+set_global_assignment -name QIP_FILE nios2/comm_unit/mem_init/meminit.qip
 set_global_assignment -name QIP_FILE ip/altsource_probe/hps_reset.qip
 set_global_assignment -name VERILOG_FILE ip/debounce/debounce.v
 set_global_assignment -name VERILOG_FILE ip/edge_detect/altera_edge_detector.v

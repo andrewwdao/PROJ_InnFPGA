@@ -33,6 +33,14 @@
          type = "int";
       }
    }
+   element nios_comm_system.mm_bridge_for_hps_s0
+   {
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
+      }
+   }
    element nios_sensor_system
    {
       datum _sortIndex
@@ -45,7 +53,7 @@
    {
       datum baseAddress
       {
-         value = "262144";
+         value = "524288";
          type = "String";
       }
    }
@@ -138,6 +146,11 @@
    dir="end" />
  <interface name="memory" internal="hps_system.memory" type="conduit" dir="end" />
  <interface
+   name="nios_comm_system_actuator_pio_external_connection"
+   internal="nios_comm_system.actuator_pio_external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
    name="nios_comm_system_led_pio"
    internal="nios_comm_system.led_pio"
    type="conduit"
@@ -145,6 +158,11 @@
  <interface
    name="nios_comm_system_nios2_gen2_cpu_resetrequest_conduit"
    internal="nios_comm_system.nios2_gen2_cpu_resetrequest_conduit"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="nios_comm_system_pio_wifi_reset_external_connection"
+   internal="nios_comm_system.pio_wifi_reset_external_connection"
    type="conduit"
    dir="end" />
  <interface
@@ -212,10 +230,10 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_MAP"><![CDATA[<address-map><slave name='nios_comm_system_shared_memory.s2' start='0x0' end='0x1000' /><slave name='nios_comm_system_onchip_memory2.s1' start='0x20000' end='0x40000' /><slave name='nios_sensor_system_shared_memory.s2' start='0x40000' end='0x41000' /><slave name='nios_sensor_system_onchip_memory2.s1' start='0x60000' end='0x80000' /></address-map>]]></parameter>
+  <parameter name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_MAP"><![CDATA[<address-map><slave name='nios_comm_system_shared_memory.s2' start='0x0' end='0x1000' /><slave name='nios_comm_system_onchip_memory2.s1' start='0x40000' end='0x649F0' /><slave name='nios_sensor_system_shared_memory.s2' start='0x80000' end='0x81000' /><slave name='nios_sensor_system_onchip_memory2.s1' start='0xA0000' end='0xC0000' /></address-map>]]></parameter>
   <parameter
      name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_WIDTH"
-     value="AddressWidth = 19" />
+     value="AddressWidth = 20" />
   <parameter name="AUTO_UNIQUE_ID">$${FILENAME}_hps_system</parameter>
  </module>
  <module
@@ -261,7 +279,7 @@
    start="hps_system.shared_mem_bridge_m0"
    end="nios_sensor_system.mm_bridge_for_hps_s0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00040000" />
+  <parameter name="baseAddress" value="0x00080000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="21.1" start="clk_0.clk" end="hps_system.clk" />

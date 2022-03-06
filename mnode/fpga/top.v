@@ -157,6 +157,8 @@ wire      [7:0]     fpga_led_for_nios_sensor;
 
 
 // Wires for shared memory access beteen HPS sytem and NiosII system //
+wire pio_wifi_reset;
+
 wire		shared_mem_bridge_waitrequest;
 wire	[31:0]	shared_mem_bridge_readdata;
 wire		shared_mem_bridge_readdatavalid;
@@ -177,6 +179,14 @@ wire		nios2_resettaken_pio_wire;
 assign fpga_clk_50 = FPGA_CLK1_50;
 assign stm_hw_events = {{15{1'b0}}, SW, fpga_led_for_hps_internal, fpga_debounced_buttons};
 
+
+assign WIFI_RST_n = KEY[0] & pio_wifi_reset;
+assign WIFI_EN = 1'b1;
+
+assign LED[6] = ~WIFI_UART0_TX;
+assign LED[7] = ~WIFI_UART0_RX;
+
+assign UART2USB_TX = ((SW[0] == 1'b0)? WIFI_UART0_RX: WIFI_UART0_TX);
 
 //=======================================================
 //  Structural coding
@@ -283,8 +293,17 @@ qsys_top u0 (
         
         // .nios_comm_system_rs485_uart_1_external_connection_rxd                   (NIOS_UART1_RXD),                   //      nios_comm_system_rs485_uart_1_external_connection.rxd
         // .nios_comm_system_rs485_uart_1_external_connection_txd                   (NIOS_UART1_TXD),                   //                                                       .txd
-        .nios_comm_system_rs485_uart_0_external_connection_rxd                   (TMD_D[3]),                 //    nios_comm_system_rs485_uart_0_external_connection_1.rxd
-        .nios_comm_system_rs485_uart_0_external_connection_txd                   (TMD_D[7]),                 //                                                       .txd
+        // .nios_comm_system_rs485_uart_0_external_connection_rxd                   (TMD_D[3]),                 //    nios_comm_system_rs485_uart_0_external_connection_1.rxd
+        // .nios_comm_system_rs485_uart_0_external_connection_txd                   (TMD_D[7]),                 //                                                       .txd
+        
+		// .nios_comm_system_rs485_uart_1_external_connection_rxd                   (TMD_D[2]),                   //      nios_comm_system_rs485_uart_1_external_connection.rxd
+        // .nios_comm_system_rs485_uart_1_external_connection_txd                   (TMD_D[1]),                   //                                                       .txd
+        
+		.nios_comm_system_rs485_uart_0_external_connection_rxd                   (WIFI_UART0_RX),                 //    nios_comm_system_rs485_uart_0_external_connection_1.rxd
+        .nios_comm_system_rs485_uart_0_external_connection_txd                   (WIFI_UART0_TX),                 // .txd
+        .nios_comm_system_rs485_uart_0_external_connection_cts_n                 (WIFI_UART0_CTS),                 // .cts_n
+        .nios_comm_system_rs485_uart_0_external_connection_rts_n                 (WIFI_UART0_RTS), // .rts_n
+		.nios_comm_system_pio_wifi_reset_external_connection_export            (pio_wifi_reset),            //  pio_wifi_reset_external_connection.export
         
         .nios_comm_system_rs485_uart_1_external_connection_rxd                   (TMD_D[2]),                   //      nios_comm_system_rs485_uart_1_external_connection.rxd
         .nios_comm_system_rs485_uart_1_external_connection_txd                   (TMD_D[1]),                   //                                                       .txd
@@ -485,7 +504,7 @@ always @(posedge fpga_clk_50 or negedge hps_fpga_reset_n) begin
 end
 
 //assign LED[0] = led_level;
-assign LED[7: 0] = { fpga_led_for_nios_comm[1:0], fpga_led_for_nios_comm[1:0], fpga_led_for_hps_internal[2:0] , led_level};
+//assign LED[7: 0] = { fpga_led_for_nios_comm[1:0], fpga_led_for_nios_comm[1:0], fpga_led_for_hps_internal[2:0] , led_level};
 
 // assign LED[7: 0] = { fpga_led_for_nios_internal[2:0], fpga_led_for_hps_internal[3:0] , led_level};
 

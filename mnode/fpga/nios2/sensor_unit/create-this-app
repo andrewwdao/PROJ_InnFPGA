@@ -12,12 +12,13 @@
 # This script creates the hello_world application in this directory.
 
 
-BSP_DIR=../RFS_SENSOR_bsp
+BSP_DIR=../sensor_unit_bsp
 QUARTUS_PROJECT_DIR=../../
 
-NIOS2_APP_GEN_ARGS="--elf-name RFS_SENSOR.elf --set OBJDUMP_INCLUDE_SOURCE 1"
+NIOS2_APP_GEN_ARGS="--elf-name sensor_unit.elf --set OBJDUMP_INCLUDE_SOURCE 1"
 NIOS2_APP_GEN_ARGS="$NIOS2_APP_GEN_ARGS --src-files main.c --src-dir lib_src" 
-NIOS2_APP_GEN_ARGS="$NIOS2_APP_GEN_ARGS --set APP_CFLAGS_OPTIMIZATION -O2 " 
+NIOS2_APP_GEN_ARGS="$NIOS2_APP_GEN_ARGS --set APP_CFLAGS_OPTIMIZATION -O2 "
+# NIOS2_APP_GEN_ARGS="$NIOS2_APP_GEN_ARGS --set --device 2 --instance 1"
 
 # Identify running on Linux or (Windows/WSL)
 command -v nios2-app-generate-makefile > /dev/null
@@ -111,6 +112,7 @@ $cmd || {
     exit 1
 }
 
+# if we are not skipping make
 if [ -z "$SKIP_MAKE" ]; then
         cmd="make"
 
