@@ -12,6 +12,7 @@
 // soil humidity sensor
 #include <cJSON.h>
 
+#define DEVICE_ID       2
 #define BLINK_INTERVAL  500  //ms
 #define UPDATE_INTERVAL 3000 //ms
 #define DEBUG_BAUDRATE  115200
@@ -109,7 +110,7 @@ char *create_message(float temp, uint16_t soil, uint16_t light, uint16_t co2, ui
     char *string = NULL;
 
     cJSON *message = cJSON_CreateObject();
-    if ((cJSON_AddNumberToObject(message, "id", 1) == NULL)       ||
+    if ((cJSON_AddNumberToObject(message, "id", DEVICE_ID) == NULL)       ||
         (cJSON_AddNumberToObject(message, "temp", temp) == NULL)  ||
         (cJSON_AddNumberToObject(message, "soil", soil) == NULL)  ||
         (cJSON_AddNumberToObject(message, "ligh", light) == NULL) ||
