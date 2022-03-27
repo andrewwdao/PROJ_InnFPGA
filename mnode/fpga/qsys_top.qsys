@@ -161,10 +161,13 @@
    type="conduit"
    dir="end" />
  <interface
-   name="nios_comm_system_pio_wifi_reset_external_connection"
-   internal="nios_comm_system.pio_wifi_reset_external_connection"
+   name="nios_comm_system_pio_relays_external_connection"
+   internal="nios_comm_system.pio_relays_external_connection"
    type="conduit"
    dir="end" />
+ <interface
+   name="nios_comm_system_pio_wifi_reset_external_connection"
+   internal="nios_comm_system.pio_wifi_reset_external_connection" />
  <interface
    name="nios_comm_system_rs485_uart_0_external_connection"
    internal="nios_comm_system.rs485_uart_0_external_connection"
@@ -234,7 +237,7 @@
   <parameter
      name="AUTO_SHARED_MEM_BRIDGE_M0_ADDRESS_WIDTH"
      value="AddressWidth = 20" />
-  <parameter name="AUTO_UNIQUE_ID">$${FILENAME}_hps_system</parameter>
+  <parameter name="AUTO_UNIQUE_ID" value="qsys_top_hps_system" />
  </module>
  <module
    name="nios_comm_system"
@@ -248,7 +251,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID">$${FILENAME}_nios_comm_system</parameter>
+  <parameter name="AUTO_UNIQUE_ID">qsys_top_nios_comm_system</parameter>
  </module>
  <module
    name="nios_sensor_system"
@@ -262,7 +265,7 @@
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="7" />
   <parameter name="AUTO_GENERATION_ID" value="0" />
-  <parameter name="AUTO_UNIQUE_ID">$${FILENAME}_nios_sensor_system</parameter>
+  <parameter name="AUTO_UNIQUE_ID">qsys_top_nios_sensor_system</parameter>
  </module>
  <connection
    kind="avalon"
